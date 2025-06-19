@@ -41,6 +41,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>libs/EliteMMO.API.dll</HintPath>
     </Reference>
+    <Reference Include="EliteAPI">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libs/EliteAPI.dll</HintPath>
+    </Reference>
     <Reference Include="MetroFramework, Version=1.2.0.3, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.dll</HintPath>
@@ -105,9 +109,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="corsair_X01_icon.ico" />
-    <Content Include="EliteAPI.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

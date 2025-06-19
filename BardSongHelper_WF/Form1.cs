@@ -1,4 +1,4 @@
-﻿﻿using EliteMMO.API;
+﻿﻿﻿﻿using EliteMMO.API;
 using MetroFramework;
 using MetroFramework.Forms;
 using System;
@@ -94,12 +94,7 @@ namespace BardSongHelper_WF
 
         public List<SongData> Songs = new List<SongData>(); // Changed from RollData rolls
 
-        public string WindowerMode = "Windower";
-
         private bool botRunning = false;
-
-        private int CurrentCastingSongValue = 0; // Renamed from CurrentRoll
-        private int LastCastingSongValue = 0; // Added to fix missing variable
 
         private bool firstSelect = false;
 
@@ -111,25 +106,24 @@ namespace BardSongHelper_WF
 
         public bool isMoving = false;
 
-        private int ListeningPort = 19702;
-
         // public bool Blocked = false; // Removed
         public bool AllInRange = false;
 
-
-        private string IP_Address = "127.0.0.1";
 
         public List<int> knownCities = new List<int> { 50, 80, 94, 87, 222, 223, 224, 225, 226, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
                                                                 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 256, 257 };
 
         // public int SongProcessActiveForGroup = 0; // Removed
-
+        private int currentFollowTargetGroup = 1; // Added for Group 2 Follow Target
+        private bool manualFollowActive = false;
+        private string manualFollowTargetName = "";
 
         #endregion
 
         public Form1()
         {
             InitializeComponent();
+            this.ShadowType = MetroFramework.Forms.MetroFormShadowType.None; 
 
             // Removed: RollOne_ComboBox.SelectedIndex = 3;
             // Removed: RollTwo_ComboBox.SelectedIndex = 10;
@@ -248,21 +242,6 @@ namespace BardSongHelper_WF
             Select_POLID.Text = "SELECTED";
             Select_POLID.BackColor = Color.Green;
 
-            foreach (Process dats in Process.GetProcessesByName("pol").Where(dats => POLID.Text == dats.MainWindowTitle))
-            {
-                for (int i = 0; i < dats.Modules.Count; i++)
-                {
-                    if (dats.Modules[i].FileName.Contains("Ashita.dll"))
-                    {
-                        WindowerMode = "Ashita";
-                    }
-                    else if (dats.Modules[i].FileName.Contains("Hook.dll"))
-                    {
-                        WindowerMode = "Windower";
-                    }
-                }
-            }
-
             if (firstSelect == false)
             {
 
@@ -271,18 +250,6 @@ namespace BardSongHelper_WF
                 {
                     cl = _api.Chat.GetNextChatLine();
                 }
-
-                if (WindowerMode == "Windower")
-                {
-                    _api.ThirdParty.SendString("//lua load crb_addon");
-                }
-                else if (WindowerMode == "Ashita")
-                {
-                    _api.ThirdParty.SendString("/addon load crb_addon");
-                }
-
-
-                AddonReader.RunWorkerAsync();
 
                 GrabParty();
 
@@ -310,49 +277,54 @@ namespace BardSongHelper_WF
                 return;
             }
 
-            if (timerBusy == true || (LastCastingSongValue == CurrentCastingSongValue && BuffChecker(309) == true)) // Updated variable names
+            if (timerBusy == true)
             {
                 return;
             }
-
-            // if (BuffChecker(309) == false) // Corsair's "Bust" specific?
-            // {
-            //     LastCastingSongValue = 0;
-            // }
 
             try
             {
                 timerBusy = true;
 
-                // Removed Corsair-specific buff check for Double-Up (BuffChecker(308))
-                // and related CurrentCastingSongValue = 0 / SongStatus_Label.Text = "0" logic.
-                // AddonReader still updates SongStatus_Label if addon sends data.
-
-                if (botRunning == true && !knownCities.Contains(_api.Player.ZoneId) && isMoving == false)
+                if (botRunning == true && !knownCities.Contains(_api.Player.ZoneId) && isMoving == false && manualFollowActive == false) 
                 {
-                    FollowTargetAsync(); // Keep follow logic
+                    // Determine which follow target to use for automated song cycle following
+                    if (currentFollowTargetGroup == 1)
+                    {
+                        await FollowTargetAsync(FollowerTarget.Text);
+                    }
+                    else // currentFollowTargetGroup == 2
+                    {
+                        await FollowTargetAsync(FollowerTargetGroup2.Text);
+                    }
 
-                    // Process Group 1
-                    await ProcessSongGroup(
-                        new List<SongData> {
-                            Songs.FirstOrDefault(s => s.Position == SongGroup1_Song1_ComboBox.SelectedIndex),
-                            Songs.FirstOrDefault(s => s.Position == SongGroup1_Song2_ComboBox.SelectedIndex)
-                        },
-                        Member_List_Group1,
-                        new List<Label> { SongGroup1_Timer1_Label, SongGroup1_Timer2_Label },
-                        1 // Group Number
-                    );
-
-                    // Process Group 2
-                    await ProcessSongGroup(
-                        new List<SongData> {
-                            Songs.FirstOrDefault(s => s.Position == SongGroup2_Song1_ComboBox.SelectedIndex),
-                            Songs.FirstOrDefault(s => s.Position == SongGroup2_Song2_ComboBox.SelectedIndex)
-                        },
-                        Member_List_Group2,
-                        new List<Label> { SongGroup2_Timer1_Label, SongGroup2_Timer2_Label },
-                        2 // Group Number
-                    );
+                    // Process corresponding song group and then switch target group for next cycle
+                    if (currentFollowTargetGroup == 1)
+                    {
+                        await ProcessSongGroup(
+                            new List<SongData> {
+                                Songs.FirstOrDefault(s => s.Position == SongGroup1_Song1_ComboBox.SelectedIndex),
+                                Songs.FirstOrDefault(s => s.Position == SongGroup1_Song2_ComboBox.SelectedIndex)
+                            },
+                            Member_List_Group1,
+                            new List<Label> { SongGroup1_Timer1_Label, SongGroup1_Timer2_Label },
+                            1 // Group Number
+                        );
+                        currentFollowTargetGroup = 2; // Switch to Group 2 for next follow/song cycle
+                    }
+                    else // currentFollowTargetGroup == 2
+                    {
+                        await ProcessSongGroup(
+                            new List<SongData> {
+                                Songs.FirstOrDefault(s => s.Position == SongGroup2_Song1_ComboBox.SelectedIndex),
+                                Songs.FirstOrDefault(s => s.Position == SongGroup2_Song2_ComboBox.SelectedIndex)
+                            },
+                            Member_List_Group2,
+                            new List<Label> { SongGroup2_Timer1_Label, SongGroup2_Timer2_Label },
+                            2 // Group Number
+                        );
+                        currentFollowTargetGroup = 1; // Switch back to Group 1 for next follow/song cycle
+                    }
                 }
                 await Task.Delay(TimeSpan.FromMilliseconds(500)); // Main timer tick delay
             }
@@ -377,7 +349,7 @@ namespace BardSongHelper_WF
             return 0;
         }
 
-        private async void FollowTargetAsync()
+        private async Task FollowTargetAsync(string targetName)
         {
             // Check if you have the required Buffs active, if not then run them.
             if (_api == null || _api.Player.LoginStatus != (int)LoginStatus.LoggedIn || _api.Player.LoginStatus == (int)LoginStatus.Loading)
@@ -385,15 +357,16 @@ namespace BardSongHelper_WF
                 return;
             }
 
-            if (FollowerTarget.Text == string.Empty || FollowerTarget.Text == "Follower target name")
+            if (string.IsNullOrWhiteSpace(targetName) || targetName == "Follower target name." || targetName == "Follower target G2 name.")
             {
                 return;
             }
 
-            uint followID = GetTargetIdByName(FollowerTarget.Text);
+            uint followID = GetTargetIdByName(targetName);
 
             if (followID == 0)
             {
+                 // Don't show a message here, as this is part of the automated loop
                 return;
             }
 
@@ -403,6 +376,8 @@ namespace BardSongHelper_WF
             isMoving = true;
             while (Math.Truncate(FollowedCharacter.Distance) >= (float)6)
             {
+                if (manualFollowActive) break; // Stop if manual follow took over
+
                 _api.AutoFollow.SetAutoFollowCoords(FollowedCharacter.X - PlayerCharacter.X,
                                                    FollowedCharacter.Y - PlayerCharacter.Y,
                                                    FollowedCharacter.Z - PlayerCharacter.Z);
@@ -410,187 +385,45 @@ namespace BardSongHelper_WF
                 _api.AutoFollow.IsAutoFollowing = true;
 
                 await Task.Delay(TimeSpan.FromSeconds(0.1));
+                 if (manualFollowActive) break; 
             }
-            _api.AutoFollow.IsAutoFollowing = false;
-            isMoving = false;
-
+             if (!manualFollowActive) // Only turn off if this wasn't interrupted by manual follow
+            {
+                _api.AutoFollow.IsAutoFollowing = false;
+                isMoving = false;
+            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            this.ShadowType = MetroFramework.Forms.MetroFormShadowType.None; 
+
+            // Stop and Dispose timers
+            if (Song_Timer != null)
+            {
+                Song_Timer.Stop();
+                Song_Timer.Dispose();
+            }
+            if (PauseTimersChecks != null)
+            {
+                PauseTimersChecks.Stop();
+                PauseTimersChecks.Dispose();
+            }
+
+            // API cleanup
             if (_api != null)
             {
-                if (WindowerMode == "Ashita")
+                if (_api is IDisposable disposableApi)
                 {
-                    _api.ThirdParty.SendString("/addon unload crb_addon");
+                    disposableApi.Dispose();
                 }
-                else if (WindowerMode == "Windower")
-                {
-                    _api.ThirdParty.SendString("//lua unload crb_addon");
-                }
+                _api = null; 
             }
-
-            _api = null;
+            
+            // Force the application to exit if it hasn't already.
+            // This should be one of the very last things.
+            Application.Exit(); 
         }
-
-        #region "ADDON READER BACKGROUND TASK"
-
-        private void AddonReader_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-        {
-            bool done = false;
-
-            int listenPort = Convert.ToInt32(ListeningPort);
-
-            UdpClient listener = new UdpClient(listenPort);
-            IPEndPoint groupEP = new IPEndPoint(IPAddress.Parse(IP_Address), listenPort);
-
-            string received_data;
-
-            byte[] receive_byte_array;
-
-            try
-            {
-                while (!done)
-                {
-                    receive_byte_array = listener.Receive(ref groupEP);
-
-                    received_data = Encoding.ASCII.GetString(receive_byte_array, 0, receive_byte_array.Length);
-
-                    //MessageBox.Show("FOUND " + received_data);
-
-                    string[] data_received = received_data.Split(' ');
-
-
-
-                    if (data_received[0] == "crollbot_addon")
-                    {
-
-                        LastCastingSongValue = CurrentCastingSongValue; // Updated variable name
-
-
-                        // UPDATE SONG CASTING INFORMATION (if addon sends this)
-                        CurrentCastingSongValue = Convert.ToInt32(data_received[1]); // Updated variable name
-
-                        if (SongStatus_Label.InvokeRequired) // Updated control name
-                        {
-                            SongStatus_Label.Invoke(new MethodInvoker(delegate () { SongStatus_Label.Text = data_received[1]; }));
-                        }
-                        else
-                        {
-                            SongStatus_Label.Text = data_received[1];
-                        }
-
-                    }
-                    else if (data_received[0] == "crb")
-                    {
-                        if (data_received[1].ToLower() == "validated")
-                        {
-                            if (AddonActive.InvokeRequired)
-                            {
-                                AddonActive.Invoke(new MethodInvoker(delegate () { AddonActive.Text = "YES"; AddonActive.BackColor = Color.Green; }));
-                            }
-                            else
-                            {
-                                AddonActive.Text = "YES"; AddonActive.BackColor = Color.Green;
-                            }
-                        }
-                        else if (data_received[1].ToLower() == "toggle")
-                        {
-                            if (botRunning == false)
-                            {
-                                if (ActivityButton.InvokeRequired)
-                                {
-                                    ActivityButton.Invoke(new MethodInvoker(delegate () { ActivityButton.BackColor = Color.Green; ActivityButton.Text = "RUNNING!"; }));
-                                }
-                                else
-                                {
-                                    ActivityButton.BackColor = Color.Green; ActivityButton.Text = "RUNNING!";
-                                }
-
-                                botRunning = true;
-                            }
-                            else
-                            {
-                                if (ActivityButton.InvokeRequired)
-                                {
-                                    ActivityButton.Invoke(new MethodInvoker(delegate () { ActivityButton.BackColor = Color.Red; ActivityButton.Text = "PAUSED!"; }));
-                                }
-                                else
-                                {
-                                    ActivityButton.BackColor = Color.Red; ActivityButton.Text = "PAUSED!";
-                                }
-
-                                botRunning = false;
-                            }
-
-                        }
-                        else if (data_received[1].ToLower() == "stop" || data_received[1].ToLower() == "pause")
-                        {
-
-                            if (ActivityButton.InvokeRequired)
-                            {
-                                ActivityButton.Invoke(new MethodInvoker(delegate () { ActivityButton.BackColor = Color.Red; ActivityButton.Text = "PAUSED!"; }));
-                            }
-                            else
-                            {
-                                ActivityButton.BackColor = Color.Red; ActivityButton.Text = "PAUSED!";
-                            }
-                            botRunning = false;
-                        }
-                        else if (data_received[1].ToLower() == "start" || data_received[1].ToLower() == "unpause")
-                        {
-                            if (ActivityButton.InvokeRequired)
-                            {
-                                ActivityButton.Invoke(new MethodInvoker(delegate () { ActivityButton.BackColor = Color.Green; ActivityButton.Text = "RUNNING!"; }));
-                            }
-                            else
-                            {
-                                ActivityButton.BackColor = Color.Green; ActivityButton.Text = "RUNNING!";
-                            }
-                            botRunning = true;
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-            }
-            finally
-            {
-                listener.Close();
-
-            }
-
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-
-            AddonReader.CancelAsync();
-        }
-
-        private void AddonReader_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
-        {
-            AddonReader.RunWorkerAsync();
-        }
-
-        #endregion
-
-        #region "ADDON ACTIVE CHECKER"
-
-        private void AddonActive_Click(object sender, EventArgs e)
-        {
-            if (_api != null)
-            {
-                if (WindowerMode == "Windower")
-                {
-                    _api.ThirdParty.SendString("//CorsairRollBot verify");
-                }
-                else if (WindowerMode == "Ashita")
-                {
-                    _api.ThirdParty.SendString("/CorsairRollBot verify");
-                }
-            }
-        }
-
-        #endregion
 
         #region "DISTANCE CHECKER"
 
@@ -938,6 +771,106 @@ namespace BardSongHelper_WF
         {
             FollowerTarget.Text = string.Empty;
         }
+
+        private void labelFollowerTargetGroup2Clear_Click(object sender, EventArgs e)
+        {
+            FollowerTargetGroup2.Text = string.Empty;
+        }
+
+        private void buttonToggleManualFollow_Click(object sender, EventArgs e)
+        {
+            if (_api == null || _api.Player.LoginStatus != (int)LoginStatus.LoggedIn)
+            {
+                MetroMessageBox.Show(this, "Please select a POL process first.", "API Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!manualFollowActive) // If we are not currently manually following, try to start.
+            {
+                string targetToFollow = "";
+                // Determine target based on currentFollowTargetGroup or fallback
+                if (currentFollowTargetGroup == 1 && !string.IsNullOrWhiteSpace(FollowerTarget.Text) && FollowerTarget.Text != "Follower target name.")
+                {
+                    targetToFollow = FollowerTarget.Text;
+                }
+                else if (currentFollowTargetGroup == 2 && !string.IsNullOrWhiteSpace(FollowerTargetGroup2.Text) && FollowerTargetGroup2.Text != "Follower target G2 name.")
+                {
+                    targetToFollow = FollowerTargetGroup2.Text;
+                }
+                // Fallback logic if current group's target is empty
+                else if (!string.IsNullOrWhiteSpace(FollowerTarget.Text) && FollowerTarget.Text != "Follower target name.")
+                {
+                     targetToFollow = FollowerTarget.Text;
+                }
+                else if (!string.IsNullOrWhiteSpace(FollowerTargetGroup2.Text) && FollowerTargetGroup2.Text != "Follower target G2 name.")
+                {
+                    targetToFollow = FollowerTargetGroup2.Text;
+                }
+
+                if (!string.IsNullOrWhiteSpace(targetToFollow))
+                {
+                    // Verify target exists before attempting to follow
+                    uint tempTargetId = GetTargetIdByName(targetToFollow);
+                    if (tempTargetId == 0)
+                    {
+                        MetroMessageBox.Show(this, $"Target '{targetToFollow}' not found in the current zone.", "Target Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return; // Do not proceed if target not found
+                    }
+
+                    _api.ThirdParty.SendString($"/follow \"{targetToFollow}\"");
+                    // If a brief delay was beneficial, it could be added here if this method becomes async
+                    // await Task.Delay(300); 
+
+                    // Set API flags to reflect that the bot considers itself to be in a follow state.
+                    // These flags are important if other parts of the bot's logic (like the song cycle's own follow check)
+                    // depend on them, or if the user's original "unfollow was working fine" means these flags + text command were the combo.
+                    _api.AutoFollow.IsAutoFollowing = true; 
+                    isMoving = true;
+
+                    manualFollowTargetName = targetToFollow;
+                    manualFollowActive = true;
+                    if (buttonToggleManualFollow.InvokeRequired) {
+                        buttonToggleManualFollow.Invoke(new MethodInvoker(delegate { buttonToggleManualFollow.Text = "Unfollow"; }));
+                    } else {
+                        buttonToggleManualFollow.Text = "Unfollow";
+                    }
+                }
+                else
+                {
+                    MetroMessageBox.Show(this, "No valid target name entered in either follow field.", "No Target", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            else // manualFollowActive is true, so stop following.
+            {
+                _api.ThirdParty.SendString("/follow"); // Placeholder for actual stop follow command.
+                
+                // Reset API/bot state variables, consistent with original interpretation of "unfollow was working"
+                _api.AutoFollow.IsAutoFollowing = false;
+                isMoving = false;
+
+                // Clear the UI field that was used for manual follow
+                if (!string.IsNullOrEmpty(manualFollowTargetName))
+                {
+                    if (FollowerTarget.Text == manualFollowTargetName)
+                    {
+                        FollowerTarget.Text = "Follower target name."; // Reset to placeholder
+                    }
+                    else if (FollowerTargetGroup2.Text == manualFollowTargetName)
+                    {
+                        FollowerTargetGroup2.Text = "Follower target G2 name."; // Reset to placeholder
+                    }
+                }
+                manualFollowTargetName = "";
+                manualFollowActive = false;
+                if (buttonToggleManualFollow.InvokeRequired) {
+                    buttonToggleManualFollow.Invoke(new MethodInvoker(delegate { buttonToggleManualFollow.Text = "Follow Current Target"; }));
+                } else {
+                    buttonToggleManualFollow.Text = "Follow Current Target";
+                }
+            }
+        }
+        
+        // StartBotFollow and StopBotFollow methods would be here if not deleted in this step.
 
         private void PauseTimersChecks_Tick(object sender, EventArgs e)
         {
