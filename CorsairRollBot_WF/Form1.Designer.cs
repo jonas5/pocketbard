@@ -254,7 +254,7 @@
             this.metroLabel4.Name = "metroLabel4";
             this.metroLabel4.Size = new System.Drawing.Size(181, 19);
             this.metroLabel4.TabIndex = 6;
-            this.metroLabel4.Text = "Only when ROLL greater than";
+            this.metroLabel4.Text = "Stop ROLL when greater than";
             // 
             // metroLabel3
             // 
@@ -546,7 +546,7 @@
             this.Name = "Form1";
             this.Resizable = false;
             this.Style = MetroFramework.MetroColorStyle.Purple;
-            this.Text = "Corsair Roll Bot v2.0.4";
+            this.Text = "Corsair Roll Bot v2.0.5 - Youda Logic";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);

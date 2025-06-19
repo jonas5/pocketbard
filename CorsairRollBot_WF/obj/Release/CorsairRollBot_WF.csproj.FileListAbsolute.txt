@@ -30,3 +30,35 @@ C:\Users\Main\Desktop\VirusScanExcusion\GITHUB DESKTOP\CorsairRollBot_WF\Corsair
 C:\Users\Main\Desktop\VirusScanExcusion\GITHUB DESKTOP\CorsairRollBot_WF\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.csproj.CopyComplete
 C:\Users\Main\Desktop\VirusScanExcusion\GITHUB DESKTOP\CorsairRollBot_WF\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.exe
 C:\Users\Main\Desktop\VirusScanExcusion\GITHUB DESKTOP\CorsairRollBot_WF\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.pdb
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.exe
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.pdb
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.csproj.AssemblyReference.cache
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.Form1.resources
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.Properties.Resources.resources
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.csproj.GenerateResource.cache
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.csproj.CoreCompileInputs.cache
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\EliteAPI.dll
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\CorsairRollBot_WF.exe.config
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\CorsairRollBot_WF.exe
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\CorsairRollBot_WF.pdb
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\EliteMMO.API.dll
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\MetroFramework.Design.dll
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\MetroFramework.dll
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\MetroFramework.Fonts.dll
+C:\Users\Youda\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairR.91CC91F4.Up2Date
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\EliteAPI.dll
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\CorsairRollBot_WF.exe.config
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\CorsairRollBot_WF.exe
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\CorsairRollBot_WF.pdb
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\EliteMMO.API.dll
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\MetroFramework.Design.dll
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\MetroFramework.dll
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\bin\Release\MetroFramework.Fonts.dll
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.csproj.AssemblyReference.cache
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.Form1.resources
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.Properties.Resources.resources
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.csproj.GenerateResource.cache
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.csproj.CoreCompileInputs.cache
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairR.91CC91F4.Up2Date
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.exe
+C:\Users\Youda\Gits\FFXI-Rollbot-v2\CorsairRollBot_WF\obj\Release\CorsairRollBot_WF.pdb

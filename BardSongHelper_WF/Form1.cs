@@ -1,4 +1,4 @@
-﻿using EliteMMO.API;
+﻿﻿using EliteMMO.API;
 using MetroFramework;
 using MetroFramework.Forms;
 using System;
@@ -101,17 +101,17 @@ namespace BardSongHelper_WF
         private int CurrentCastingSongValue = 0; // Renamed from CurrentRoll
         private int LastCastingSongValue = 0; // Added to fix missing variable
 
-            private bool firstSelect = false;
+        private bool firstSelect = false;
 
-            public int lastCommand = 0;
+        public int lastCommand = 0;
 
-            public bool timerBusy = false;
+        public bool timerBusy = false;
 
-            public bool followBusy = false;
+        public bool followBusy = false;
 
-            public bool isMoving = false;
+        public bool isMoving = false;
 
-            private int ListeningPort = 19701;
+        private int ListeningPort = 19701;
 
         // public bool Blocked = false; // Removed
         public bool AllInRange = false;
@@ -156,7 +156,7 @@ namespace BardSongHelper_WF
             if (File.Exists("eliteapi.dll") && File.Exists("elitemmo.api.dll"))
             {
                 Process[] pol = Process.GetProcessesByName("pol");
-
+                MessageBox.Show("Found " + pol.Length + " POL instances.", "POL Instances Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 if (pol.Length < 1)
                 {
                     MetroMessageBox.Show(this, "No POL instances were able to be located." + "\n\n" +
@@ -262,7 +262,7 @@ namespace BardSongHelper_WF
 
                 AddonReader.RunWorkerAsync();
 
-
+                MessageBox.Show("Your POLID has been selected and the addon has been loaded.", "Addon Loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 GrabParty();
 
                 firstSelect = true;
@@ -607,8 +607,17 @@ namespace BardSongHelper_WF
 
         #region "PARTY MEMBER CHECKER TIMER"
 
+
         private void GrabParty()
         {
+            // IF IN A PARTY THEN SET EACH CHECKBOX FIELD AS ENABLED AND POSSIBLE TO CHECK WITH THE
+            // PT MEMBERS NAME SHOWN
+            if (_api == null)
+            {
+                MessageBox.Show("Your messenger is not connected to POL, please select a POLID from the list and click 'Select POLID' button.");
+                return;
+            }
+
             if (_api != null)
             {
                 List<EliteAPI.PartyMember> PartyMembers = _api.Party.GetPartyMembers();
@@ -616,21 +625,34 @@ namespace BardSongHelper_WF
                 PartyMembersGroup1_ListBox.Items.Clear(); // Updated control name
                 PartyMembersGroup2_ListBox.Items.Clear(); // Added for Group 2
 
+
+
                 if (PartyMembers.Count() > 1)
                 {
                     foreach (EliteAPI.PartyMember PT_Data in PartyMembers)
                     {
-                        if (PT_Data.Name != _api.Player.Name && !PartyMembersGroup1_ListBox.Items.Contains(PT_Data.Name) && PT_Data.Name != "" && PT_Data.Active >= 1)
+
+
+                        MessageBox.Show("PT_Data.Active: " + PT_Data.Active, "Party Member Check", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        if (!string.IsNullOrWhiteSpace(PT_Data.Name)
+                            && PT_Data.Name != _api.Player.Name
+                            && PT_Data.Active >= 1
+                            && !PartyMembersGroup1_ListBox.Items.Contains(PT_Data.Name)
+                            && !PartyMembersGroup2_ListBox.Items.Contains(PT_Data.Name))
                         {
-                            PartyMembersGroup1_ListBox.Items.Add(PT_Data.Name); // Updated control name
-                            PartyMembersGroup2_ListBox.Items.Add(PT_Data.Name); // Added for Group 2
+                            PartyMembersGroup1_ListBox.Items.Add(PT_Data.Name);
+                            PartyMembersGroup2_ListBox.Items.Add(PT_Data.Name);
                         }
+
                     }
                 }
+
+
             }
         }
-
         #endregion
+
+
 
         // Handles the countdown timer for an individual active song effect.
         // Updates the UI timer label and cleans up when the song expires.
@@ -641,7 +663,8 @@ namespace BardSongHelper_WF
             {
                 if (songEffect.SongUITimerLabel.InvokeRequired)
                 {
-                    songEffect.SongUITimerLabel.Invoke(new MethodInvoker(delegate {
+                    songEffect.SongUITimerLabel.Invoke(new MethodInvoker(delegate
+                    {
                         songEffect.SongUITimerLabel.Text = $"{songEffect.SongName.Split(' ')[0]}: {TimeSpan.FromSeconds(songEffect.RemainingDurationSeconds):mm\\:ss}";
                     }));
                 }
@@ -668,7 +691,7 @@ namespace BardSongHelper_WF
 
                 if (songEffect.SongUITimerLabel != null)
                 {
-                     if (songEffect.SongUITimerLabel.InvokeRequired)
+                    if (songEffect.SongUITimerLabel.InvokeRequired)
                     {
                         songEffect.SongUITimerLabel.Invoke(new MethodInvoker(delegate { songEffect.SongUITimerLabel.Text = "00:00"; }));
                     }
@@ -724,10 +747,14 @@ namespace BardSongHelper_WF
                             oldestEffect.AssociatedTimer.Dispose();
                             targetEffects.Remove(oldestEffect);
                             allActiveSongEffects.Remove(oldestEffect);
-                            if (oldestEffect.SongUITimerLabel != null) {
-                                if (oldestEffect.SongUITimerLabel.InvokeRequired) {
+                            if (oldestEffect.SongUITimerLabel != null)
+                            {
+                                if (oldestEffect.SongUITimerLabel.InvokeRequired)
+                                {
                                     oldestEffect.SongUITimerLabel.Invoke(new MethodInvoker(delegate { oldestEffect.SongUITimerLabel.Text = "00:00"; }));
-                                } else {
+                                }
+                                else
+                                {
                                     oldestEffect.SongUITimerLabel.Text = "00:00";
                                 }
                             }
@@ -756,10 +783,14 @@ namespace BardSongHelper_WF
                     targetEffects.Add(newEffect);
                     allActiveSongEffects.Add(newEffect);
 
-                    if (songLabel != null) {
-                         if (songLabel.InvokeRequired) {
+                    if (songLabel != null)
+                    {
+                        if (songLabel.InvokeRequired)
+                        {
                             songLabel.Invoke(new MethodInvoker(delegate { songLabel.Text = $"{newEffect.SongName.Split(' ')[0]}: {TimeSpan.FromSeconds(newEffect.RemainingDurationSeconds):mm\\:ss}"; }));
-                        } else {
+                        }
+                        else
+                        {
                             songLabel.Text = $"{newEffect.SongName.Split(' ')[0]}: {TimeSpan.FromSeconds(newEffect.RemainingDurationSeconds):mm\\:ss}";
                         }
                     }
@@ -784,7 +815,8 @@ namespace BardSongHelper_WF
             SongGroup2_Song2_ComboBox.Items.Clear();
             SongGroup2_Song2_ComboBox.Items.AddRange(songNames);
 
-            if (songNames.Length > 0) {
+            if (songNames.Length > 0)
+            {
                 SongGroup1_Song1_ComboBox.SelectedIndex = 0;
                 SongGroup1_Song2_ComboBox.SelectedIndex = Math.Min(1, songNames.Length - 1);
                 SongGroup2_Song1_ComboBox.SelectedIndex = 0;

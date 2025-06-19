@@ -395,23 +395,36 @@ namespace CorsairRollBot_WF
 
             if (File.Exists("eliteapi.dll") && File.Exists("elitemmo.api.dll"))
             {
-                Process[] pol = Process.GetProcessesByName("pol");
+                List<string> processNames = new List<string> { "pol", "edenxi", "xiloader" };
+                List<Process> foundProcesses = new List<Process>();
 
-                if (pol.Length < 1)
+                foreach (string name in processNames)
                 {
-                    MetroMessageBox.Show(this, "No POL instances were able to be located." + "\n\n" +
-                        "Please note: If you use a private server make sure the program used to access it has been renamed to POL " +
-                        "otherwise this bot will not be able to locate it.", "Notice:", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    Process[] processes = Process.GetProcessesByName(name);
+                    if (processes.Length > 0)
+                    {
+                        foundProcesses.AddRange(processes);
+                    }
+                }
+
+                if (foundProcesses.Count < 1)
+                {
+                    MetroMessageBox.Show(this, "No game instances (pol.exe, edenxi.exe, xiloader.exe) were located." + "\n\n" +
+                        "Please ensure the game is running. If you use a private server, make sure the executable is named appropriately.", "Notice:", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
                 else
                 {
-                    for (int i = 0; i < pol.Length; i++)
+                    foreach (Process process in foundProcesses)
                     {
-                        POLID.Items.Add(pol[i].MainWindowTitle);
-                        processids.Items.Add(pol[i].Id);
+                        POLID.Items.Add(process.MainWindowTitle);
+                        processids.Items.Add(process.Id);
                     }
-                    POLID.SelectedIndex = 0;
-                    processids.SelectedIndex = 0;
+
+                    if (POLID.Items.Count > 0)
+                    {
+                        POLID.SelectedIndex = 0;
+                        processids.SelectedIndex = 0;
+                    }
                 }
             }
             else
@@ -602,12 +615,21 @@ namespace CorsairRollBot_WF
                             unlucky = rollTwo.Unlucky;
                         }
 
+
+
+
+
+
                         // DOUBLE-UP CHANCE IS ACTIVE DOUBLE UP, SNAKE EYE, RANDOM DEAL IF NEEDED
                         if (BuffChecker(308) == true)
                         {
 
                             if (Blocked == false)
                             {
+
+
+
+
 
                                 if (CurrentRoll == 11 || CurrentRoll == lucky)
                                 {
@@ -621,72 +643,108 @@ namespace CorsairRollBot_WF
                                 }
                                 else
                                 {
-                                    if (CurrentRoll == unlucky)
-                                    {
-                                        // AN UNLUCKY ROLL IS ACTIVE IF ENABLED USE SNAKE EYE IF NOT
-                                        // AVAILABLE AND RANDOM DEAL IS ENABLED TRY TO RESET SNAKE EYE TO
-                                        // ROLL A BETTER NUMBER
 
-                                        if (SnakeEye_Switch.Checked == true && HasAbility("Snake Eye") == true && AbilityRecast("Snake Eye") == 0 && BuffChecker(357) != true)
-                                        {
-                                            _api.ThirdParty.SendString("/ja \"Snake Eye\" <me>");
-                                        }
-                                        else if (SnakeEye_Switch.Checked == true && HasAbility("Snake Eye") == true && AbilityRecast("Snake Eye") != 0 &&
-                                            RandomDeal_Switch.Checked == true && HasAbility("Random Deal") == true && AbilityRecast("Random Deal") == 0 && BuffChecker(357) != true)
-                                        {
-                                            _api.ThirdParty.SendString("/ja \"Random Deal\" <me>");
-                                        }
-                                        else
-                                        {
-                                            // DOUBLE UP ANYWAY, AN UNLUCKY ROLL IS NOT WORTH KEEPING
-                                            if (AbilityRecast("Double-Up") == 0)
-                                            {
-                                                _api.ThirdParty.SendString("/ja \"Double-Up\" <me>");
-                                            }
-                                        }
+
+
+
+                                    // Check if the roll is unlucky and unlucky > 6
+                                    if (CurrentRoll == unlucky && SnakeEye_Switch.Checked == true && unlucky > 6 && BuffChecker(308) == true && HasAbility("Double-Up") == true && AbilityRecast("Double-Up") == 0)
+                                    {
+                                        // If the roll is unlucky and unlucky > 6, then use Double-Up
+                                        _api.ThirdParty.SendString("/ja \"Double-Up\" <me>");
+                                        await Task.Delay(TimeSpan.FromSeconds(1));
+                                        return; // or continue, depending on your loop structure
                                     }
-                                    else
-                                    {
-                                        // SNAKE EYE IS UP SO DOUBLE-UP
-                                        if (BuffChecker(357) == true && AbilityRecast("Double-Up") == 0)
-                                        {
-                                            _api.ThirdParty.SendString("/ja \"Double-Up\" <me>");
-                                            await Task.Delay(TimeSpan.FromSeconds(1));
 
-                                        }
-                                        else if (CurrentRoll == SnakeEye_Number.Value && ((SnakeEye_Switch.Checked == true && AbilityRecast("Snake Eye") == 0) || (SnakeEye_Switch.Checked == true && RandomDeal_Switch.Checked == true && AbilityRecast("Random Deal") == 0)))
+                                    if (CurrentRoll == lucky - 1 && SnakeEye_Switch.Checked == true && BuffChecker(357) == false && HasAbility("Snake Eye") == true && AbilityRecast("Snake Eye") == 0)
+                                    {
+                                        // IF THE ROLL IS ONE BELOW THE LUCKY NUMBER AND SNAKE EYE IS AVAILABLE THEN USE IT
+                                        _api.ThirdParty.SendString("/ja \"Snake Eye\" <me>");
+                                        await Task.Delay(TimeSpan.FromSeconds(1));
+                                    }
+
+                                    if (CurrentRoll == 10 && SnakeEye_Switch.Checked == true && BuffChecker(357) == false  && HasAbility("Snake Eye") == true  && AbilityRecast("Snake Eye") == 0)
+                                    {
+                                        // IF THE ROLL IS 10 AND SNAKE EYE IS AVAILABLE THEN USE IT 
+                                        _api.ThirdParty.SendString("/ja \"Snake Eye\" <me>");
+                                        await Task.Delay(TimeSpan.FromSeconds(1));
+                                    }
+                                    
+                                    if (CurrentRoll > 8 && SnakeEye_Switch.Checked == true && CurrentRoll != lucky && CurrentRoll != 11 && HasAbility("Snake Eye") == true && BuffChecker(357) == false && AbilityRecast("Snake Eye") == 0)
+                                    {
+                                        // IF THE ROLL IS ABOVE 8 AND NOT LUCKY OR 11 AND SNAKE EYE IS AVAILABLE THEN USE IT
+                                        _api.ThirdParty.SendString("/ja \"Snake Eye\" <me>");
+                                        await Task.Delay(TimeSpan.FromSeconds(1));
+                                    }
+
+
+
+                                    if (CurrentRoll == unlucky)
                                         {
-                                            // IF THE ROLL IS 10 THEN USE SNAKE EYE
+                                            // AN UNLUCKY ROLL IS ACTIVE IF ENABLED USE SNAKE EYE IF NOT
+                                            // AVAILABLE AND RANDOM DEAL IS ENABLED TRY TO RESET SNAKE EYE TO
+                                            // ROLL A BETTER NUMBER
+
                                             if (SnakeEye_Switch.Checked == true && HasAbility("Snake Eye") == true && AbilityRecast("Snake Eye") == 0 && BuffChecker(357) != true)
                                             {
-                                                // SNAKE EYE CAN BE USED SO DO SO
                                                 _api.ThirdParty.SendString("/ja \"Snake Eye\" <me>");
-                                                await Task.Delay(TimeSpan.FromSeconds(1));
                                             }
-                                            else if (SnakeEye_Switch.Checked == true && HasAbility("Snake Eye") == true && AbilityRecast("Snake Eye") != 0 && BuffChecker(357) != true
-                                                && RandomDeal_Switch.Checked == true && HasAbility("Random Deal") == true && AbilityRecast("Random Deal") == 0)
+                                            else if (SnakeEye_Switch.Checked == true && HasAbility("Snake Eye") == true && AbilityRecast("Snake Eye") != 0 &&
+                                                RandomDeal_Switch.Checked == true && HasAbility("Random Deal") == true && AbilityRecast("Random Deal") == 0 && BuffChecker(357) != true)
                                             {
-                                                // SNAKE EYE IS ON RECAST BUT RANDOM DEAL IS NOT, TRY TO
-                                                // RESET SNAKE EYE
                                                 _api.ThirdParty.SendString("/ja \"Random Deal\" <me>");
-                                                await Task.Delay(TimeSpan.FromSeconds(1));
                                             }
                                             else
                                             {
-                                                // DO NOTHING AS YOU WOULD HAVE TO BE VERY LUCKY TO ROLL A
-                                                // NUMBER ONE
+                                                // DOUBLE UP ANYWAY, AN UNLUCKY ROLL IS NOT WORTH KEEPING
+                                                if (AbilityRecast("Double-Up") == 0)
+                                                {
+                                                    _api.ThirdParty.SendString("/ja \"Double-Up\" <me>");
+                                                }
                                             }
                                         }
-                                        else if (CurrentRoll <= 6 && CurrentRoll != lucky)
+                                        else
                                         {
-                                            // DOUBLE-UP ANYTHING BELOW OR AT 6
-                                            if (AbilityRecast("Double-Up") == 0)
+                                            // SNAKE EYE IS UP SO DOUBLE-UP
+                                            if (BuffChecker(357) == true && AbilityRecast("Double-Up") == 0)
                                             {
                                                 _api.ThirdParty.SendString("/ja \"Double-Up\" <me>");
                                                 await Task.Delay(TimeSpan.FromSeconds(1));
+
+                                            }
+                                            else if (CurrentRoll == SnakeEye_Number.Value && ((SnakeEye_Switch.Checked == true && AbilityRecast("Snake Eye") == 0) || (SnakeEye_Switch.Checked == true && RandomDeal_Switch.Checked == true && AbilityRecast("Random Deal") == 0)))
+                                            {
+                                                // IF THE ROLL IS 10 THEN USE SNAKE EYE
+                                                if (SnakeEye_Switch.Checked == true && HasAbility("Snake Eye") == true && AbilityRecast("Snake Eye") == 0 && BuffChecker(357) != true)
+                                                {
+                                                    // SNAKE EYE CAN BE USED SO DO SO
+                                                    _api.ThirdParty.SendString("/ja \"Snake Eye\" <me>");
+                                                    await Task.Delay(TimeSpan.FromSeconds(1));
+                                                }
+                                                else if (SnakeEye_Switch.Checked == true && HasAbility("Snake Eye") == true && AbilityRecast("Snake Eye") != 0 && BuffChecker(357) != true
+                                                    && RandomDeal_Switch.Checked == true && HasAbility("Random Deal") == true && AbilityRecast("Random Deal") == 0)
+                                                {
+                                                    // SNAKE EYE IS ON RECAST BUT RANDOM DEAL IS NOT, TRY TO
+                                                    // RESET SNAKE EYE
+                                                    _api.ThirdParty.SendString("/ja \"Random Deal\" <me>");
+                                                    await Task.Delay(TimeSpan.FromSeconds(1));
+                                                }
+                                                else
+                                                {
+                                                    // DO NOTHING AS YOU WOULD HAVE TO BE VERY LUCKY TO ROLL A
+                                                    // NUMBER ONE
+                                                }
+                                            }
+                                            else if (CurrentRoll <= 6 && CurrentRoll != lucky)
+                                            {
+                                                // DOUBLE-UP ANYTHING BELOW OR AT 6
+                                                if (AbilityRecast("Double-Up") == 0)
+                                                {
+                                                    _api.ThirdParty.SendString("/ja \"Double-Up\" <me>");
+                                                    await Task.Delay(TimeSpan.FromSeconds(1));
+                                                }
                                             }
                                         }
-                                    }
 
                                 }
                             }
@@ -989,7 +1047,7 @@ namespace CorsairRollBot_WF
             {
                 EliteAPI.XiEntity entity2 = _api.Entity.GetEntity(x);
 
-                if (entity2.Name != null && entity2.Name.ToLower() == CharName && (int)entity2.Distance < 8)
+                if (entity2.Name != null && entity2.Name.ToLower() == CharName && (int)entity2.Distance < 6)
                 {
                     return true;
                 }
