@@ -136,16 +136,38 @@ namespace BardSongHelper_WF
 
             #region "ADD ALL THE SONGS TO THE CUSTOM CLASS" // Renamed region
 
-            Songs.Add(new SongData { SongName = "Valor Minuet", BuffId = 101, DurationSeconds = 180, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 0 });
-            Songs.Add(new SongData { SongName = "Blade Madrigal", BuffId = 102, DurationSeconds = 180, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 1 });
-            Songs.Add(new SongData { SongName = "Army's Paeon", BuffId = 103, DurationSeconds = 180, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 2 });
-            Songs.Add(new SongData { SongName = "Knight's Minne", BuffId = 104, DurationSeconds = 180, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 3 });
-            Songs.Add(new SongData { SongName = "Hunter's Prelude", BuffId = 105, DurationSeconds = 180, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 4 });
-            Songs.Add(new SongData { SongName = "Shepherd's Etude", BuffId = 106, DurationSeconds = 180, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 5 });
-            Songs.Add(new SongData { SongName = "Victory March", BuffId = 107, DurationSeconds = 180, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 6 });
-            Songs.Add(new SongData { SongName = "Advancing March", BuffId = 108, DurationSeconds = 180, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 7 });
-            Songs.Add(new SongData { SongName = "Foe Requiem VII", BuffId = 109, DurationSeconds = 180, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 8 });
-            Songs.Add(new SongData { SongName = "Horde Lullaby II", BuffId = 110, DurationSeconds = 180, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 9 });
+            Songs.Add(new SongData { SongName = "Advancing March", BuffId = 108, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 0 });
+            Songs.Add(new SongData { SongName = "Army's Paeon", BuffId = 103, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 1 });
+            Songs.Add(new SongData { SongName = "Army's Paeon II", BuffId = 114, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 2 });
+            Songs.Add(new SongData { SongName = "Army's Paeon III", BuffId = 121, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 3 });
+            Songs.Add(new SongData { SongName = "Army's Paeon IV", BuffId = 122, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 4 });
+            Songs.Add(new SongData { SongName = "Army's Paeon V", BuffId = 123, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 5 });
+            Songs.Add(new SongData { SongName = "Army's Paeon VI", BuffId = 124, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 6 });
+            Songs.Add(new SongData { SongName = "Blade Madrigal", BuffId = 102, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 7 });
+            Songs.Add(new SongData { SongName = "Earth Carol", BuffId = 118, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 8 });
+            Songs.Add(new SongData { SongName = "Fire Carol", BuffId = 116, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 9 });
+            Songs.Add(new SongData { SongName = "Foe Requiem VII", BuffId = 109, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 10 });
+            Songs.Add(new SongData { SongName = "Horde Lullaby II", BuffId = 110, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 11 });
+            Songs.Add(new SongData { SongName = "Hunter's Prelude", BuffId = 105, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 12 });
+            Songs.Add(new SongData { SongName = "Ice Carol", BuffId = 115, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 13 });
+            Songs.Add(new SongData { SongName = "Knight's Minne", BuffId = 104, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 14 });
+            Songs.Add(new SongData { SongName = "Knight's Minne II", BuffId = 112, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 15 });
+            Songs.Add(new SongData { SongName = "Knight's Minne III", BuffId = 125, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 16 });
+            Songs.Add(new SongData { SongName = "Knight's Minne IV", BuffId = 126, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 17 });
+            Songs.Add(new SongData { SongName = "Knight's Minne V", BuffId = 127, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 18 });
+            Songs.Add(new SongData { SongName = "Lightning Carol", BuffId = 117, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 19 });
+            Songs.Add(new SongData { SongName = "Mage's Ballad", BuffId = 111, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 20 });
+            Songs.Add(new SongData { SongName = "Mage's Ballad II", BuffId = 128, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 21 });
+            Songs.Add(new SongData { SongName = "Mage's Ballad III", BuffId = 129, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 22 });
+            Songs.Add(new SongData { SongName = "Shepherd's Etude", BuffId = 106, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 23 });
+            Songs.Add(new SongData { SongName = "Valor Minuet", BuffId = 101, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 24 });
+            Songs.Add(new SongData { SongName = "Valor Minuet II", BuffId = 113, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 25 });
+            Songs.Add(new SongData { SongName = "Valor Minuet III", BuffId = 130, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 26 });
+            Songs.Add(new SongData { SongName = "Valor Minuet IV", BuffId = 131, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 27 });
+            Songs.Add(new SongData { SongName = "Valor Minuet V", BuffId = 132, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 28 });
+            Songs.Add(new SongData { SongName = "Victory March", BuffId = 107, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 29 });
+            Songs.Add(new SongData { SongName = "Water Carol", BuffId = 120, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 30 });
+            Songs.Add(new SongData { SongName = "Wind Carol", BuffId = 119, DurationSeconds = 150, CastTimeSeconds = 8, AreaOfEffectYalms = 7, Position = 31 });
 
             #endregion
 
@@ -632,7 +654,7 @@ namespace BardSongHelper_WF
                     {
 
 
-                        
+
                         if (!string.IsNullOrWhiteSpace(PT_Data.Name)
                             && PT_Data.Name != _api.Player.Name
                             && PT_Data.Active >= 1
@@ -761,10 +783,10 @@ namespace BardSongHelper_WF
                     }
 
                     // Apply the new song by sending the command
-//                    _api.ThirdParty.SendString($"/ma \"{songToApply.SongName}\" \"{targetMember.CharacterName}\"");
+                    //                    _api.ThirdParty.SendString($"/ma \"{songToApply.SongName}\" \"{targetMember.CharacterName}\"");
                     _api.ThirdParty.SendString($"/ma \"{songToApply.SongName}\" <me>"); // Changed to self-cast for testing
 
-                    await Task.Delay(7500);
+                    await Task.Delay(500);
 
                     ActiveSongEffect newEffect = new ActiveSongEffect
                     {
