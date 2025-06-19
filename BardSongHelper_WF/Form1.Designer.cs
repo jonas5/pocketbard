@@ -330,7 +330,7 @@ namespace BardSongHelper_WF
             this.groupBoxPartyGroup2.Controls.Add(this.ReloadParty);
             this.groupBoxPartyGroup2.Controls.Add(this.PartyMembersGroup2_ListBox);
             this.groupBoxPartyGroup2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxPartyGroup2.Location = new System.Drawing.Point(317, 280);
+            this.groupBoxPartyGroup2.Location = new System.Drawing.Point(317, 310);
             this.groupBoxPartyGroup2.Name = "groupBoxPartyGroup2";
             this.groupBoxPartyGroup2.Size = new System.Drawing.Size(152, 210);
             this.groupBoxPartyGroup2.TabIndex = 12;
@@ -358,7 +358,7 @@ namespace BardSongHelper_WF
             this.groupBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox6.Location = new System.Drawing.Point(317, 124);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(152, 210);
+            this.groupBox6.Size = new System.Drawing.Size(152, 180);
             this.groupBox6.TabIndex = 7;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = " GROUP 1 TARGETS ";
@@ -381,7 +381,7 @@ namespace BardSongHelper_WF
             // ActivityButton
             //
             this.ActivityButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ActivityButton.Location = new System.Drawing.Point(245, 540);
+            this.ActivityButton.Location = new System.Drawing.Point(305, 540);
             this.ActivityButton.Name = "ActivityButton";
             this.ActivityButton.Size = new System.Drawing.Size(163, 43);
             this.ActivityButton.TabIndex = 6;
@@ -613,7 +613,7 @@ namespace BardSongHelper_WF
             // 
             // buttonToggleManualFollow
             // 
-            this.buttonToggleManualFollow.Location = new System.Drawing.Point(245, 589);
+            this.buttonToggleManualFollow.Location = new System.Drawing.Point(305, 589);
             this.buttonToggleManualFollow.Name = "buttonToggleManualFollow";
             this.buttonToggleManualFollow.Size = new System.Drawing.Size(163, 35);
             this.buttonToggleManualFollow.TabIndex = 14; // Assuming 13 was last used by groupBoxBardOptionsGroup2
