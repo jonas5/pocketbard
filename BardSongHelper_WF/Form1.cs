@@ -86,7 +86,7 @@ namespace BardSongHelper_WF
         // For tracking active songs per target
         private Dictionary<string, List<ActiveSongEffect>> activeSongEffectsByTarget = new Dictionary<string, List<ActiveSongEffect>>();
         // Flat list of all active songs for easier global management if needed
-        private List<ActiveSongEffect> allActiveSongEffects = new List<ActiveSongEffect>>();
+        private List<ActiveSongEffect> allActiveSongEffects = new List<ActiveSongEffect>();
 
         public ListBox processids = new ListBox();
 
@@ -99,21 +99,19 @@ namespace BardSongHelper_WF
         private bool botRunning = false;
 
         private int CurrentCastingSongValue = 0; // Renamed from CurrentRoll
-        private int LastCastingSongValue = 0; // Renamed from LastKnownRoll
+        private int LastCastingSongValue = 0; // Added to fix missing variable
 
-        private bool firstSelect = false;
+            private bool firstSelect = false;
 
-        public int lastCommand = 0;
+            public int lastCommand = 0;
 
-        public bool timerBusy = false;
+            public bool timerBusy = false;
 
-        public bool followBusy = false;
+            public bool followBusy = false;
 
-        public bool isMoving = false;
+            public bool isMoving = false;
 
-        private bool FollowerStuck = false;
-
-        private int ListeningPort = 19701;
+            private int ListeningPort = 19701;
 
         // public bool Blocked = false; // Removed
         public bool AllInRange = false;

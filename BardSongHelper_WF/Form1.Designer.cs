@@ -17,7 +17,6 @@ namespace BardSongHelper_WF
             {
                 components.Dispose();
             }
-            base.Dispose(disposing);
         }
 
         #region Windows Form Designer generated code
@@ -77,6 +76,11 @@ namespace BardSongHelper_WF
             this.groupBoxSongGroup2.SuspendLayout();
             this.groupBoxPartyGroup2.SuspendLayout();
             this.SuspendLayout();
+
+
+
+
+
             //
             // groupBox1
             //
@@ -123,6 +127,9 @@ namespace BardSongHelper_WF
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = " SONG GROUP 1 ";
+
+
+
             //
             // SongGroup1_Song1_ComboBox
             //
@@ -230,6 +237,8 @@ namespace BardSongHelper_WF
             //
             // groupBoxPartyGroup2
             //
+            
+            this.groupBoxPartyGroup2.Controls.Add(this.ReloadParty);
             this.groupBoxPartyGroup2.Controls.Add(this.PartyMembersGroup2_ListBox);
             this.groupBoxPartyGroup2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBoxPartyGroup2.Location = new System.Drawing.Point(317, 280);
@@ -249,6 +258,36 @@ namespace BardSongHelper_WF
             this.PartyMembersGroup2_ListBox.Size = new System.Drawing.Size(136, 148);
             this.PartyMembersGroup2_ListBox.TabIndex = 0;
             this.PartyMembersGroup2_ListBox.SelectedValueChanged += new System.EventHandler(this.PartyMembersGroup2_ListBox_SelectedValueChanged);
+
+
+
+
+            //
+            // groupBox6
+            //
+            this.groupBox6.Controls.Add(this.PartyMembersGroup1_ListBox);
+            this.groupBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox6.Location = new System.Drawing.Point(317, 124);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(152, 210);
+            this.groupBox6.TabIndex = 7;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = " GROUP 1 TARGETS ";
+
+
+            //
+            // ReloadParty
+            //
+            // THEN, define ReloadParty and its properties
+            this.ReloadParty.Location = new System.Drawing.Point(37, 180);
+            this.ReloadParty.Name = "ReloadParty";
+            this.ReloadParty.Size = new System.Drawing.Size(75, 23);
+            this.ReloadParty.TabIndex = 1;
+            this.ReloadParty.Text = "reload";
+            this.ReloadParty.UseVisualStyleBackColor = true;
+            this.ReloadParty.Click += new System.EventHandler(this.ReloadParty_Click);
+            
+                        
             //
             // groupBox4
             //
@@ -305,28 +344,8 @@ namespace BardSongHelper_WF
             this.ActivityButton.Text = "START";
             this.ActivityButton.UseVisualStyleBackColor = true;
             this.ActivityButton.Click += new System.EventHandler(this.ActivityButton_Click);
-            //
-            // groupBox6
-            //
-            this.groupBox6.Controls.Add(this.ReloadParty);
-            this.groupBox6.Controls.Add(this.PartyMembersGroup1_ListBox);
-            this.groupBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox6.Location = new System.Drawing.Point(317, 124);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(152, 210);
-            this.groupBox6.TabIndex = 7;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = " GROUP 1 TARGETS ";
-            //
-            // ReloadParty
-            //
-            this.ReloadParty.Location = new System.Drawing.Point(38, 179);
-            this.ReloadParty.Name = "ReloadParty";
-            this.ReloadParty.Size = new System.Drawing.Size(75, 23);
-            this.ReloadParty.TabIndex = 1;
-            this.ReloadParty.Text = "reload";
-            this.ReloadParty.UseVisualStyleBackColor = true;
-            this.ReloadParty.Click += new System.EventHandler(this.ReloadParty_Click);
+
+
             //
             // PartyMembersGroup1_ListBox
             //
@@ -373,7 +392,7 @@ namespace BardSongHelper_WF
             this.FollowerTarget.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
             this.FollowerTarget.CustomButton.UseSelectable = true;
             this.FollowerTarget.CustomButton.Visible = false;
-            this.FollowerTarget.Lines = new string[] { "Follower target name."};
+            this.FollowerTarget.Lines = new string[] { "Follower target name." };
             this.FollowerTarget.Location = new System.Drawing.Point(6, 19);
             this.FollowerTarget.MaxLength = 32767;
             this.FollowerTarget.Name = "FollowerTarget";

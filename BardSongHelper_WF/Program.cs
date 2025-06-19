@@ -4,19 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CorsairRollBot_WF
+namespace BardSongHelper_WF // Or whatever the original project's default namespace was for Program.cs
 {
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new Form1()); // Assumes Form1 is in the same namespace or using directive is present
         }
     }
 }
