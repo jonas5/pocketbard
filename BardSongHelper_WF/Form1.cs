@@ -156,7 +156,7 @@ namespace BardSongHelper_WF
             if (File.Exists("eliteapi.dll") && File.Exists("elitemmo.api.dll"))
             {
                 Process[] pol = Process.GetProcessesByName("pol");
-                MessageBox.Show("Found " + pol.Length + " POL instances.", "POL Instances Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show("Found " + pol.Length + " POL instances.", "POL Instances Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 if (pol.Length < 1)
                 {
                     MetroMessageBox.Show(this, "No POL instances were able to be located." + "\n\n" +
@@ -262,7 +262,6 @@ namespace BardSongHelper_WF
 
                 AddonReader.RunWorkerAsync();
 
-                MessageBox.Show("Your POLID has been selected and the addon has been loaded.", "Addon Loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 GrabParty();
 
                 firstSelect = true;
@@ -633,7 +632,7 @@ namespace BardSongHelper_WF
                     {
 
 
-                        MessageBox.Show("PT_Data.Active: " + PT_Data.Active, "Party Member Check", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        
                         if (!string.IsNullOrWhiteSpace(PT_Data.Name)
                             && PT_Data.Name != _api.Player.Name
                             && PT_Data.Active >= 1
@@ -762,8 +761,10 @@ namespace BardSongHelper_WF
                     }
 
                     // Apply the new song by sending the command
-                    _api.ThirdParty.SendString($"/ma \"{songToApply.SongName}\" \"{targetMember.CharacterName}\"");
-                    await Task.Delay(250);
+//                    _api.ThirdParty.SendString($"/ma \"{songToApply.SongName}\" \"{targetMember.CharacterName}\"");
+                    _api.ThirdParty.SendString($"/ma \"{songToApply.SongName}\" <me>"); // Changed to self-cast for testing
+
+                    await Task.Delay(7500);
 
                     ActiveSongEffect newEffect = new ActiveSongEffect
                     {
