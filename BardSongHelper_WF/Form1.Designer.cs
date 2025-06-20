@@ -149,7 +149,7 @@ namespace BardSongHelper_WF
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(11, 124);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(300, 163);
+            this.groupBox2.Size = new System.Drawing.Size(338, 163);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = " SONG GROUP 1 ";
@@ -235,7 +235,7 @@ namespace BardSongHelper_WF
             // 
             this.SongGroup1_Timer1_Label.Location = new System.Drawing.Point(238, 24);
             this.SongGroup1_Timer1_Label.Name = "SongGroup1_Timer1_Label";
-            this.SongGroup1_Timer1_Label.Size = new System.Drawing.Size(50, 23);
+            this.SongGroup1_Timer1_Label.Size = new System.Drawing.Size(94, 23);
             this.SongGroup1_Timer1_Label.TabIndex = 4;
             this.SongGroup1_Timer1_Label.Text = "00:00";
             // 
@@ -243,7 +243,7 @@ namespace BardSongHelper_WF
             // 
             this.SongGroup1_Timer2_Label.Location = new System.Drawing.Point(238, 60);
             this.SongGroup1_Timer2_Label.Name = "SongGroup1_Timer2_Label";
-            this.SongGroup1_Timer2_Label.Size = new System.Drawing.Size(50, 23);
+            this.SongGroup1_Timer2_Label.Size = new System.Drawing.Size(94, 23);
             this.SongGroup1_Timer2_Label.TabIndex = 5;
             this.SongGroup1_Timer2_Label.Text = "00:00";
             // 
@@ -262,9 +262,9 @@ namespace BardSongHelper_WF
             // 
             this.groupBox6.Controls.Add(this.PartyMembersGroup1_ListBox);
             this.groupBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox6.Location = new System.Drawing.Point(317, 124);
+            this.groupBox6.Location = new System.Drawing.Point(355, 124);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(152, 163);
+            this.groupBox6.Size = new System.Drawing.Size(114, 163);
             this.groupBox6.TabIndex = 7;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = " GROUP 1 TARGETS ";
@@ -276,7 +276,7 @@ namespace BardSongHelper_WF
             this.PartyMembersGroup1_ListBox.Location = new System.Drawing.Point(6, 19);
             this.PartyMembersGroup1_ListBox.Name = "PartyMembersGroup1_ListBox";
             this.PartyMembersGroup1_ListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.PartyMembersGroup1_ListBox.Size = new System.Drawing.Size(136, 136);
+            this.PartyMembersGroup1_ListBox.Size = new System.Drawing.Size(102, 136);
             this.PartyMembersGroup1_ListBox.TabIndex = 0;
             this.PartyMembersGroup1_ListBox.SelectedValueChanged += new System.EventHandler(this.PartyMembersGroup1_ListBox_SelectedValueChanged);
             // 
@@ -465,7 +465,7 @@ namespace BardSongHelper_WF
             this.groupBoxSongGroup2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBoxSongGroup2.Location = new System.Drawing.Point(11, 293);
             this.groupBoxSongGroup2.Name = "groupBoxSongGroup2";
-            this.groupBoxSongGroup2.Size = new System.Drawing.Size(300, 162);
+            this.groupBoxSongGroup2.Size = new System.Drawing.Size(338, 162);
             this.groupBoxSongGroup2.TabIndex = 11;
             this.groupBoxSongGroup2.TabStop = false;
             this.groupBoxSongGroup2.Text = " SONG GROUP 2 ";
@@ -566,7 +566,7 @@ namespace BardSongHelper_WF
             // 
             this.SongGroup2_Timer1_Label.Location = new System.Drawing.Point(238, 24);
             this.SongGroup2_Timer1_Label.Name = "SongGroup2_Timer1_Label";
-            this.SongGroup2_Timer1_Label.Size = new System.Drawing.Size(50, 23);
+            this.SongGroup2_Timer1_Label.Size = new System.Drawing.Size(94, 23);
             this.SongGroup2_Timer1_Label.TabIndex = 3;
             this.SongGroup2_Timer1_Label.Text = "00:00";
             // 
@@ -574,7 +574,7 @@ namespace BardSongHelper_WF
             // 
             this.SongGroup2_Timer2_Label.Location = new System.Drawing.Point(238, 60);
             this.SongGroup2_Timer2_Label.Name = "SongGroup2_Timer2_Label";
-            this.SongGroup2_Timer2_Label.Size = new System.Drawing.Size(50, 23);
+            this.SongGroup2_Timer2_Label.Size = new System.Drawing.Size(94, 23);
             this.SongGroup2_Timer2_Label.TabIndex = 4;
             this.SongGroup2_Timer2_Label.Text = "00:00";
             // 
@@ -582,9 +582,9 @@ namespace BardSongHelper_WF
             // 
             this.groupBoxPartyGroup2.Controls.Add(this.PartyMembersGroup2_ListBox);
             this.groupBoxPartyGroup2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxPartyGroup2.Location = new System.Drawing.Point(317, 293);
+            this.groupBoxPartyGroup2.Location = new System.Drawing.Point(355, 293);
             this.groupBoxPartyGroup2.Name = "groupBoxPartyGroup2";
-            this.groupBoxPartyGroup2.Size = new System.Drawing.Size(152, 162);
+            this.groupBoxPartyGroup2.Size = new System.Drawing.Size(114, 162);
             this.groupBoxPartyGroup2.TabIndex = 12;
             this.groupBoxPartyGroup2.TabStop = false;
             this.groupBoxPartyGroup2.Text = " GROUP 2 TARGETS ";
@@ -594,11 +594,12 @@ namespace BardSongHelper_WF
             // 
             this.PartyMembersGroup2_ListBox.FormattingEnabled = true;
             this.PartyMembersGroup2_ListBox.ItemHeight = 12;
-            this.PartyMembersGroup2_ListBox.Location = new System.Drawing.Point(6, 17);
+            this.PartyMembersGroup2_ListBox.Location = new System.Drawing.Point(6, 19);
             this.PartyMembersGroup2_ListBox.Name = "PartyMembersGroup2_ListBox";
             this.PartyMembersGroup2_ListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.PartyMembersGroup2_ListBox.Size = new System.Drawing.Size(136, 136);
+            this.PartyMembersGroup2_ListBox.Size = new System.Drawing.Size(102, 136);
             this.PartyMembersGroup2_ListBox.TabIndex = 0;
+            this.PartyMembersGroup2_ListBox.SelectedIndexChanged += new System.EventHandler(this.PartyMembersGroup2_ListBox_SelectedIndexChanged);
             this.PartyMembersGroup2_ListBox.SelectedValueChanged += new System.EventHandler(this.PartyMembersGroup2_ListBox_SelectedValueChanged);
             // 
             // ReloadParty
@@ -613,7 +614,7 @@ namespace BardSongHelper_WF
             // 
             // buttonToggleManualFollow
             // 
-            this.buttonToggleManualFollow.Location = new System.Drawing.Point(317, 648);
+            this.buttonToggleManualFollow.Location = new System.Drawing.Point(317, 647);
             this.buttonToggleManualFollow.Name = "buttonToggleManualFollow";
             this.buttonToggleManualFollow.Size = new System.Drawing.Size(152, 37);
             this.buttonToggleManualFollow.TabIndex = 14;

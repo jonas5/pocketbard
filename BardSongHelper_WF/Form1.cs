@@ -1329,6 +1329,13 @@ namespace BardSongHelper_WF
             // Helper function to play songs for a group
             async Task PlaySongsForGroup(int groupNum, string followTargetName, List<SongData> songsToPlay, List<PartyRequirements> partyMembers)
             {
+                string playerName = _api.Player.Name;
+                if (!activeSongEffectsByTarget.ContainsKey(playerName))
+                {
+                    activeSongEffectsByTarget[playerName] = new List<ActiveSongEffect>();
+                }
+                List<ActiveSongEffect> playerEffects = activeSongEffectsByTarget[playerName];
+
                 if (cancellationToken.IsCancellationRequested) cancellationToken.ThrowIfCancellationRequested();
 
                 if (!string.IsNullOrWhiteSpace(followTargetName) && followTargetName != "Follower target name." && followTargetName != "Follower target G2 name.")
@@ -1379,6 +1386,139 @@ namespace BardSongHelper_WF
                     // Announce song to party chat
                     await SendCommand($"/p Now playing: {song.SongName}!", 1500);
                     _api.ThirdParty.SendString($"/ma \"{song.SongName}\" <me>");
+
+                    if (groupNum == 1)
+                    {
+                        Label currentSongLabel = null;
+                        int songIndexInGroup = songsToPlay.IndexOf(song);
+
+                        if (songIndexInGroup == 0) currentSongLabel = SongGroup1_Timer1_Label;
+                        else if (songIndexInGroup == 1) currentSongLabel = SongGroup1_Timer2_Label;
+
+                        // Overwrite logic for group 1 songs on the player
+                        var existingGroup1PlayerEffects = playerEffects.Where(eff => eff.AppliedByGroup == 1).ToList();
+                        if (existingGroup1PlayerEffects.Count >= 2) // Max 2 songs from this group for the player
+                        {
+                            ActiveSongEffect oldestEffect = existingGroup1PlayerEffects.OrderBy(eff => eff.StartTime).FirstOrDefault();
+                            if (oldestEffect != null)
+                            {
+                                oldestEffect.AssociatedTimer.Stop();
+                                oldestEffect.AssociatedTimer.Dispose();
+                                playerEffects.Remove(oldestEffect); // Remove from player-specific list
+                                allActiveSongEffects.Remove(oldestEffect); // Remove from global list
+                                if (oldestEffect.SongUITimerLabel != null)
+                                {
+                                    if (oldestEffect.SongUITimerLabel.InvokeRequired)
+                                    {
+                                        oldestEffect.SongUITimerLabel.Invoke(new MethodInvoker(delegate { oldestEffect.SongUITimerLabel.Text = "00:00"; }));
+                                    }
+                                    else
+                                    {
+                                        oldestEffect.SongUITimerLabel.Text = "00:00";
+                                    }
+                                }
+                            }
+                        }
+
+                        // Create and add new effect for the player
+                        ActiveSongEffect newEffect = new ActiveSongEffect
+                        {
+                            SongName = song.SongName,
+                            TargetName = playerName, // Target is the player
+                            RemainingDurationSeconds = song.DurationSeconds,
+                            AssociatedTimer = new System.Windows.Forms.Timer(),
+                            AppliedByGroup = 1, // Song applied by Group 1 rotation
+                            SongUITimerLabel = currentSongLabel,
+                            StartTime = DateTime.UtcNow
+                        };
+
+                        newEffect.AssociatedTimer.Interval = 1000;
+                        // Ensure newEffect is captured correctly in the lambda
+                        newEffect.AssociatedTimer.Tick += (senderObj, eventArgs) => ActiveSong_Tick(senderObj, eventArgs, newEffect);
+                        newEffect.AssociatedTimer.Start();
+
+                        playerEffects.Add(newEffect); // Add to player-specific list
+                        allActiveSongEffects.Add(newEffect); // Add to global list
+
+                        // Update UI label for the new song
+                        if (newEffect.SongUITimerLabel != null)
+                        {
+                            if (newEffect.SongUITimerLabel.InvokeRequired)
+                            {
+                                newEffect.SongUITimerLabel.Invoke(new MethodInvoker(delegate { newEffect.SongUITimerLabel.Text = $"{newEffect.SongName.Split(' ')[0]}: {TimeSpan.FromSeconds(newEffect.RemainingDurationSeconds):mm\\:ss}"; }));
+                            }
+                            else
+                            {
+                                newEffect.SongUITimerLabel.Text = $"{newEffect.SongName.Split(' ')[0]}: {TimeSpan.FromSeconds(newEffect.RemainingDurationSeconds):mm\\:ss}";
+                            }
+                        }
+                    } // End of if (groupNum == 1)
+                    else if (groupNum == 2) // Add this new block for Group 2
+                    {
+                        Label currentSongLabel = null;
+                        int songIndexInGroup = songsToPlay.IndexOf(song);
+
+                        if (songIndexInGroup == 0) currentSongLabel = SongGroup2_Timer1_Label;
+                        else if (songIndexInGroup == 1) currentSongLabel = SongGroup2_Timer2_Label;
+
+                        // Overwrite logic for group 2 songs on the player
+                        // Note: playerEffects is already defined at the start of PlaySongsForGroup
+                        var existingGroup2PlayerEffects = playerEffects.Where(eff => eff.AppliedByGroup == 2).ToList();
+                        if (existingGroup2PlayerEffects.Count >= 2) // Max 2 songs from this group for the player
+                        {
+                            ActiveSongEffect oldestEffect = existingGroup2PlayerEffects.OrderBy(eff => eff.StartTime).FirstOrDefault();
+                            if (oldestEffect != null)
+                            {
+                                oldestEffect.AssociatedTimer.Stop();
+                                oldestEffect.AssociatedTimer.Dispose();
+                                playerEffects.Remove(oldestEffect);
+                                allActiveSongEffects.Remove(oldestEffect);
+                                if (oldestEffect.SongUITimerLabel != null)
+                                {
+                                    if (oldestEffect.SongUITimerLabel.InvokeRequired)
+                                    {
+                                        oldestEffect.SongUITimerLabel.Invoke(new MethodInvoker(delegate { oldestEffect.SongUITimerLabel.Text = "00:00"; }));
+                                    }
+                                    else
+                                    {
+                                        oldestEffect.SongUITimerLabel.Text = "00:00";
+                                    }
+                                }
+                            }
+                        }
+
+                        // Create and add new effect for the player for Group 2 song
+                        ActiveSongEffect newEffect = new ActiveSongEffect
+                        {
+                            SongName = song.SongName,
+                            TargetName = playerName, // Target is the player
+                            RemainingDurationSeconds = song.DurationSeconds,
+                            AssociatedTimer = new System.Windows.Forms.Timer(),
+                            AppliedByGroup = 2, // Song applied by Group 2 rotation
+                            SongUITimerLabel = currentSongLabel,
+                            StartTime = DateTime.UtcNow
+                        };
+
+                        newEffect.AssociatedTimer.Interval = 1000;
+                        newEffect.AssociatedTimer.Tick += (senderObj, eventArgs) => ActiveSong_Tick(senderObj, eventArgs, newEffect);
+                        newEffect.AssociatedTimer.Start();
+
+                        playerEffects.Add(newEffect);
+                        allActiveSongEffects.Add(newEffect);
+
+                        // Update UI label for the new Group 2 song
+                        if (newEffect.SongUITimerLabel != null)
+                        {
+                            if (newEffect.SongUITimerLabel.InvokeRequired)
+                            {
+                                newEffect.SongUITimerLabel.Invoke(new MethodInvoker(delegate { newEffect.SongUITimerLabel.Text = $"{newEffect.SongName.Split(' ')[0]}: {TimeSpan.FromSeconds(newEffect.RemainingDurationSeconds):mm\\:ss}"; }));
+                            }
+                            else
+                            {
+                                newEffect.SongUITimerLabel.Text = $"{newEffect.SongName.Split(' ')[0]}: {TimeSpan.FromSeconds(newEffect.RemainingDurationSeconds):mm\\:ss}";
+                            }
+                        }
+                    } // End of else if (groupNum == 2)
 
                     // THIS IS THE MODIFIED DELAY:
                     int songPlayDuration = GetSongDelaySeconds();
@@ -1505,6 +1645,11 @@ namespace BardSongHelper_WF
         }
 
         private void labelSongDelay_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void PartyMembersGroup2_ListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
