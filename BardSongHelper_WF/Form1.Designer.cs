@@ -604,7 +604,7 @@ namespace BardSongHelper_WF
             // 
             // ReloadParty
             // 
-            this.ReloadParty.Location = new System.Drawing.Point(355, 468);
+            this.ReloadParty.Location = new System.Drawing.Point(369, 468);
             this.ReloadParty.Name = "ReloadParty";
             this.ReloadParty.Size = new System.Drawing.Size(75, 23);
             this.ReloadParty.TabIndex = 1;
