@@ -49,6 +49,8 @@ namespace BardSongHelper_WF
             this.metroToolTip1 = new MetroFramework.Components.MetroToolTip();
             this.DEBUG = new System.Windows.Forms.Button();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
             this.labelSoulVoice = new MetroFramework.Controls.MetroLabel();
             this.toggleSoulVoiceSwitch = new MetroFramework.Controls.MetroToggle();
             this.labelSongDelay = new MetroFramework.Controls.MetroLabel();
@@ -87,10 +89,10 @@ namespace BardSongHelper_WF
             // 
             this.comboBoxLeavePartyCall.FormattingEnabled = true;
             this.comboBoxLeavePartyCall.ItemHeight = 23;
-            this.comboBoxLeavePartyCall.Location = new System.Drawing.Point(6, 140);
+            this.comboBoxLeavePartyCall.Location = new System.Drawing.Point(135, 175);
             this.comboBoxLeavePartyCall.Name = "comboBoxLeavePartyCall";
             this.comboBoxLeavePartyCall.PromptText = "Call on party leave...";
-            this.comboBoxLeavePartyCall.Size = new System.Drawing.Size(282, 29);
+            this.comboBoxLeavePartyCall.Size = new System.Drawing.Size(153, 29);
             this.comboBoxLeavePartyCall.TabIndex = 8;
             this.comboBoxLeavePartyCall.UseSelectable = true;
             // 
@@ -98,10 +100,10 @@ namespace BardSongHelper_WF
             // 
             this.comboBoxRotationStartCall.FormattingEnabled = true;
             this.comboBoxRotationStartCall.ItemHeight = 23;
-            this.comboBoxRotationStartCall.Location = new System.Drawing.Point(6, 175);
+            this.comboBoxRotationStartCall.Location = new System.Drawing.Point(135, 140);
             this.comboBoxRotationStartCall.Name = "comboBoxRotationStartCall";
             this.comboBoxRotationStartCall.PromptText = "Call on rotation start...";
-            this.comboBoxRotationStartCall.Size = new System.Drawing.Size(282, 29);
+            this.comboBoxRotationStartCall.Size = new System.Drawing.Size(153, 29);
             this.comboBoxRotationStartCall.TabIndex = 9;
             this.comboBoxRotationStartCall.UseSelectable = true;
             // 
@@ -303,6 +305,8 @@ namespace BardSongHelper_WF
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.metroLabel2);
+            this.groupBox8.Controls.Add(this.metroLabel1);
             this.groupBox8.Controls.Add(this.labelSoulVoice);
             this.groupBox8.Controls.Add(this.toggleSoulVoiceSwitch);
             this.groupBox8.Controls.Add(this.labelSongDelay);
@@ -311,9 +315,9 @@ namespace BardSongHelper_WF
             this.groupBox8.Controls.Add(this.toggleBardRotationSwitch);
             this.groupBox8.Controls.Add(this.labelAutoJoin);
             this.groupBox8.Controls.Add(this.toggleAutoJoinSwitch);
+            this.groupBox8.Controls.Add(this.comboBoxLeavePartyCall);
             this.groupBox8.Controls.Add(this.metroLabel5);
             this.groupBox8.Controls.Add(this.PauseOnZone_Switch);
-            this.groupBox8.Controls.Add(this.comboBoxLeavePartyCall);
             this.groupBox8.Controls.Add(this.comboBoxRotationStartCall);
             this.groupBox8.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox8.Location = new System.Drawing.Point(11, 461);
@@ -323,10 +327,30 @@ namespace BardSongHelper_WF
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = " PROGRAM OPTIONS ";
             // 
+            // metroLabel2
+            // 
+            this.metroLabel2.AutoSize = true;
+            this.metroLabel2.Location = new System.Drawing.Point(8, 140);
+            this.metroLabel2.Name = "metroLabel2";
+            this.metroLabel2.Size = new System.Drawing.Size(106, 19);
+            this.metroLabel2.TabIndex = 11;
+            this.metroLabel2.Text = "Call on Rotation:";
+            this.metroLabel2.Click += new System.EventHandler(this.metroLabel2_Click);
+            // 
+            // metroLabel1
+            // 
+            this.metroLabel1.AutoSize = true;
+            this.metroLabel1.Location = new System.Drawing.Point(8, 175);
+            this.metroLabel1.Name = "metroLabel1";
+            this.metroLabel1.Size = new System.Drawing.Size(124, 19);
+            this.metroLabel1.TabIndex = 10;
+            this.metroLabel1.Text = "Call on Party Leave:";
+            this.metroLabel1.Click += new System.EventHandler(this.metroLabel1_Click);
+            // 
             // labelSoulVoice
             // 
             this.labelSoulVoice.AutoSize = true;
-            this.labelSoulVoice.Location = new System.Drawing.Point(7, 113);
+            this.labelSoulVoice.Location = new System.Drawing.Point(8, 116);
             this.labelSoulVoice.Name = "labelSoulVoice";
             this.labelSoulVoice.Size = new System.Drawing.Size(103, 19);
             this.labelSoulVoice.TabIndex = 1;
@@ -347,11 +371,12 @@ namespace BardSongHelper_WF
             // labelSongDelay
             // 
             this.labelSongDelay.AutoSize = true;
-            this.labelSongDelay.Location = new System.Drawing.Point(6, 40);
+            this.labelSongDelay.Location = new System.Drawing.Point(6, 36);
             this.labelSongDelay.Name = "labelSongDelay";
             this.labelSongDelay.Size = new System.Drawing.Size(95, 19);
             this.labelSongDelay.TabIndex = 2;
             this.labelSongDelay.Text = "Song Delay (s):";
+            this.labelSongDelay.Click += new System.EventHandler(this.labelSongDelay_Click);
             // 
             // comboBoxSongDelay
             // 
@@ -365,7 +390,7 @@ namespace BardSongHelper_WF
             // labelBardRotationSwitch
             // 
             this.labelBardRotationSwitch.AutoSize = true;
-            this.labelBardRotationSwitch.Location = new System.Drawing.Point(6, 67);
+            this.labelBardRotationSwitch.Location = new System.Drawing.Point(8, 68);
             this.labelBardRotationSwitch.Name = "labelBardRotationSwitch";
             this.labelBardRotationSwitch.Size = new System.Drawing.Size(93, 19);
             this.labelBardRotationSwitch.TabIndex = 4;
@@ -385,7 +410,7 @@ namespace BardSongHelper_WF
             // labelAutoJoin
             // 
             this.labelAutoJoin.AutoSize = true;
-            this.labelAutoJoin.Location = new System.Drawing.Point(6, 90);
+            this.labelAutoJoin.Location = new System.Drawing.Point(7, 92);
             this.labelAutoJoin.Name = "labelAutoJoin";
             this.labelAutoJoin.Size = new System.Drawing.Size(120, 19);
             this.labelAutoJoin.TabIndex = 6;
@@ -405,7 +430,7 @@ namespace BardSongHelper_WF
             // metroLabel5
             // 
             this.metroLabel5.AutoSize = true;
-            this.metroLabel5.Location = new System.Drawing.Point(6, 13);
+            this.metroLabel5.Location = new System.Drawing.Point(8, 14);
             this.metroLabel5.Name = "metroLabel5";
             this.metroLabel5.Size = new System.Drawing.Size(95, 19);
             this.metroLabel5.TabIndex = 1;
@@ -680,6 +705,8 @@ namespace BardSongHelper_WF
         private MetroFramework.Controls.MetroToggle toggleSoulVoiceSwitch;
         private MetroFramework.Controls.MetroComboBox comboBoxLeavePartyCall;
         private MetroFramework.Controls.MetroComboBox comboBoxRotationStartCall;
+        private MetroFramework.Controls.MetroLabel metroLabel1;
+        private MetroFramework.Controls.MetroLabel metroLabel2;
         // NOTE: textBoxSongDelay field is INTENTIONALLY REMOVED from this list
     }
 }

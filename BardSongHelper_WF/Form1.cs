@@ -1493,5 +1493,20 @@ namespace BardSongHelper_WF
         {
 
         }
+
+        private void metroLabel1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void metroLabel2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelSongDelay_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
