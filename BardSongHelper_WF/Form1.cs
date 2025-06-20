@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿using EliteMMO.API;
+﻿using EliteMMO.API;
 using MetroFramework;
 using MetroFramework.Forms;
 using System;
@@ -121,13 +121,22 @@ namespace BardSongHelper_WF
 
         private bool isBardRotationActive = false;
         private CancellationTokenSource bardRotationCancellationTokenSource;
+        private bool hasShownPartyWarningForProcessSongGroup = false;
 
         #endregion
 
         public Form1()
         {
             InitializeComponent();
-            this.ShadowType = MetroFramework.Forms.MetroFormShadowType.None; 
+
+            // Populate comboBoxSongDelay
+            for (int i = 5; i <= 11; i++)
+            {
+                this.comboBoxSongDelay.Items.Add(i.ToString());
+            }
+            this.comboBoxSongDelay.SelectedItem = "10";
+
+            this.ShadowType = MetroFramework.Forms.MetroFormShadowType.None;
 
             // Removed: RollOne_ComboBox.SelectedIndex = 3;
             // Removed: RollTwo_ComboBox.SelectedIndex = 10;
@@ -202,9 +211,9 @@ namespace BardSongHelper_WF
 
             #endregion
 
-            this.Text = "Pocket Bard v1.0"; // Added
+            this.Text = "Pocket Bard v1.0"; // Changed
             // Set initial state of Group 2 controls based on the toggle's default value
-            toggleGroup2Switch_CheckedChanged(toggleGroup2Switch, EventArgs.Empty); 
+            toggleGroup2Switch_CheckedChanged(toggleGroup2Switch, EventArgs.Empty);
             UpdatePolidButtonText(); // Call UpdatePolidButtonText as the last line
         }
 
@@ -405,11 +414,11 @@ namespace BardSongHelper_WF
                         if (Regex.IsMatch(chatLine.Text, @"invites you to join", RegexOptions.IgnoreCase))
                         {
 
-                        //List<EliteAPI.PartyMember> PartyMembers = _api.Party.GetPartyMembers();
-                        var partyMembers = _api.Party.GetPartyMembers();
+                            //List<EliteAPI.PartyMember> PartyMembers = _api.Party.GetPartyMembers();
+                            var partyMembers = _api.Party.GetPartyMembers();
 
 
-                        int memberscount = 0; // Reset member count for each invite
+                            int memberscount = 0; // Reset member count for each invite
                             if (partyMembers.Count() > 1)
                             {
 
@@ -429,21 +438,21 @@ namespace BardSongHelper_WF
 
                                 }
                             }
-                            
 
 
-                                    
 
-                                   //  MessageBox.Show("partyMembers.Count: " + memberscount, "Party Members Count", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    if (partyMembers == null || memberscount <= 1)
-                                    {
-                                        //MessageBox.Show(this, "You have been invited to a party. Joining automatically.", "Party Invite", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        _api.ThirdParty.SendString("/join");
-                                        await Task.Delay(2000); // Wait a moment for join to process
-                                        GrabParty(); // Refresh party UI elements
-                                    }
-                                    break;
-                                }
+
+
+                            //  MessageBox.Show("partyMembers.Count: " + memberscount, "Party Members Count", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            if (partyMembers == null || memberscount <= 1)
+                            {
+                                //MessageBox.Show(this, "You have been invited to a party. Joining automatically.", "Party Invite", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                _api.ThirdParty.SendString("/join");
+                                await Task.Delay(2000); // Wait a moment for join to process
+                                GrabParty(); // Refresh party UI elements
+                            }
+                            break;
+                        }
                         chatLine = _api.Chat.GetNextChatLine();
                     }
                 }
@@ -528,7 +537,7 @@ namespace BardSongHelper_WF
 
             if (followID == 0)
             {
-                 // Don't show a message here, as this is part of the automated loop
+                // Don't show a message here, as this is part of the automated loop
                 return;
             }
 
@@ -547,9 +556,9 @@ namespace BardSongHelper_WF
                 _api.AutoFollow.IsAutoFollowing = true;
 
                 await Task.Delay(TimeSpan.FromSeconds(0.1));
-                 if (manualFollowActive) break; 
+                if (manualFollowActive) break;
             }
-             if (!manualFollowActive) // Only turn off if this wasn't interrupted by manual follow
+            if (!manualFollowActive) // Only turn off if this wasn't interrupted by manual follow
             {
                 _api.AutoFollow.IsAutoFollowing = false;
                 isMoving = false;
@@ -558,7 +567,7 @@ namespace BardSongHelper_WF
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.ShadowType = MetroFramework.Forms.MetroFormShadowType.None; 
+            this.ShadowType = MetroFramework.Forms.MetroFormShadowType.None;
 
             // Stop and Dispose timers
             if (Song_Timer != null)
@@ -579,12 +588,12 @@ namespace BardSongHelper_WF
                 {
                     disposableApi.Dispose();
                 }
-                _api = null; 
+                _api = null;
             }
-            
+
             // Force the application to exit if it hasn't already.
             // This should be one of the very last things.
-            Application.Exit(); 
+            Application.Exit();
         }
 
         #region "DISTANCE CHECKER"
@@ -617,6 +626,37 @@ namespace BardSongHelper_WF
             {
                 return false;
             }
+        }
+
+        #endregion
+
+        #region "CHECK IF PLAYER IS IN PARTY"
+
+        private bool IsPlayerInParty()
+        {
+            if (_api == null || _api.Player == null)
+            {
+                return false; // Or handle appropriately
+            }
+
+            var partyMembers = _api.Party.GetPartyMembers();
+            int otherActiveMembers = 0;
+
+            if (partyMembers != null && partyMembers.Count() > 0)
+            {
+                foreach (EliteAPI.PartyMember PT_Data in partyMembers)
+                {
+                    if (PT_Data != null &&
+                        !string.IsNullOrWhiteSpace(PT_Data.Name) &&
+                        PT_Data.Name != _api.Player.Name &&
+                        PT_Data.Active >= 1)
+                    {
+                        otherActiveMembers++;
+                    }
+                }
+            }
+
+            return otherActiveMembers > 0;
         }
 
         #endregion
@@ -724,6 +764,22 @@ namespace BardSongHelper_WF
         private async Task ProcessSongGroup(List<SongData> selectedSongs, List<PartyRequirements> targets, List<Label> uiTimerLabels, int groupNumber)
         {
             if (_api == null || !botRunning) return;
+
+            // Check if player is in a party with other active members
+            if (!IsPlayerInParty())
+            {
+                if (!hasShownPartyWarningForProcessSongGroup)
+                {
+                    MetroMessageBox.Show(this, "You must be in a party with at least one other active member to play songs for the current song group. Songs will not be played until you are in a valid party.", "Party Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    hasShownPartyWarningForProcessSongGroup = true;
+                }
+                return; // Still return early
+            }
+            else
+            {
+                // If player is in a party, reset the flag so they get notified again if they leave party later.
+                hasShownPartyWarningForProcessSongGroup = false;
+            }
 
             // Check and use Soul Voice if toggled
             if (toggleSoulVoiceSwitch.Checked)
@@ -844,21 +900,17 @@ namespace BardSongHelper_WF
             } // End of loop for selectedSongs (Song 1, Song 2)
         }
 
-        private void textBoxSongDelay_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-            {
-                e.Handled = true; // Block non-numeric input
-            }
-        }
-
         private int GetSongDelaySeconds()
         {
-            if (int.TryParse(textBoxSongDelay.Text, out int delay) && delay > 0)
+            if (comboBoxSongDelay.SelectedItem != null && int.TryParse(comboBoxSongDelay.SelectedItem.ToString(), out int delay))
             {
-                return delay;
+                // Optional: Add validation for range 5-11 if necessary, though items are controlled
+                if (delay >= 5 && delay <= 11)
+                {
+                    return delay;
+                }
             }
-            return 10; // Default to 10 seconds if input is invalid, empty, zero, or negative
+            return 10; // Default to 10 seconds if parsing fails or value is somehow out of expected range
         }
 
         // Populates all song selection ComboBoxes with names from the Songs list
@@ -878,10 +930,48 @@ namespace BardSongHelper_WF
 
             if (songNames.Length > 0)
             {
-                SongGroup1_Song1_ComboBox.SelectedIndex = 0;
-                SongGroup1_Song2_ComboBox.SelectedIndex = Math.Min(1, songNames.Length - 1);
-                SongGroup2_Song1_ComboBox.SelectedIndex = 0;
-                SongGroup2_Song2_ComboBox.SelectedIndex = Math.Min(1, songNames.Length - 1);
+                int advancingMarchIndex = Songs.FindIndex(s => s.SongName == "Advancing March");
+                int victoryMarchIndex = Songs.FindIndex(s => s.SongName == "Victory March");
+
+                if (advancingMarchIndex != -1)
+                {
+                    SongGroup1_Song1_ComboBox.SelectedIndex = advancingMarchIndex;
+                }
+                else
+                {
+                    SongGroup1_Song1_ComboBox.SelectedIndex = 0; // Default if not found
+                }
+
+                if (victoryMarchIndex != -1)
+                {
+                    SongGroup1_Song2_ComboBox.SelectedIndex = victoryMarchIndex;
+                }
+                else
+                {
+                    // Default to second song or first if only one/zero songs and Advancing March wasn't found
+                    SongGroup1_Song2_ComboBox.SelectedIndex = Math.Min(1, songNames.Length - 1);
+                }
+
+                int magesBalladIIIndex = Songs.FindIndex(s => s.SongName == "Mage's Ballad II");
+                int magesBalladIndex = Songs.FindIndex(s => s.SongName == "Mage's Ballad");
+
+                if (magesBalladIIIndex != -1)
+                {
+                    SongGroup2_Song1_ComboBox.SelectedIndex = magesBalladIIIndex;
+                }
+                else
+                {
+                    SongGroup2_Song1_ComboBox.SelectedIndex = 0; // Default if not found
+                }
+
+                if (magesBalladIndex != -1)
+                {
+                    SongGroup2_Song2_ComboBox.SelectedIndex = magesBalladIndex;
+                }
+                else
+                {
+                    SongGroup2_Song2_ComboBox.SelectedIndex = Math.Min(1, songNames.Length - 1);
+                }
             }
         }
 
@@ -1005,7 +1095,7 @@ namespace BardSongHelper_WF
                 // Fallback logic if current group's target is empty
                 else if (!string.IsNullOrWhiteSpace(FollowerTarget.Text) && FollowerTarget.Text != "Follower target name.")
                 {
-                     targetToFollow = FollowerTarget.Text;
+                    targetToFollow = FollowerTarget.Text;
                 }
                 else if (!string.IsNullOrWhiteSpace(FollowerTargetGroup2.Text) && FollowerTargetGroup2.Text != "Follower target G2 name.")
                 {
@@ -1029,14 +1119,17 @@ namespace BardSongHelper_WF
                     // Set API flags to reflect that the bot considers itself to be in a follow state.
                     // These flags are important if other parts of the bot's logic (like the song cycle's own follow check)
                     // depend on them, or if the user's original "unfollow was working fine" means these flags + text command were the combo.
-                    _api.AutoFollow.IsAutoFollowing = true; 
+                    _api.AutoFollow.IsAutoFollowing = true;
                     isMoving = true;
 
                     manualFollowTargetName = targetToFollow;
                     manualFollowActive = true;
-                    if (buttonToggleManualFollow.InvokeRequired) {
+                    if (buttonToggleManualFollow.InvokeRequired)
+                    {
                         buttonToggleManualFollow.Invoke(new MethodInvoker(delegate { buttonToggleManualFollow.Text = "Unfollow"; }));
-                    } else {
+                    }
+                    else
+                    {
                         buttonToggleManualFollow.Text = "Unfollow";
                     }
                 }
@@ -1048,7 +1141,7 @@ namespace BardSongHelper_WF
             else // manualFollowActive is true, so stop following.
             {
                 _api.ThirdParty.SendString("/follow"); // Placeholder for actual stop follow command.
-                
+
                 // Reset API/bot state variables, consistent with original interpretation of "unfollow was working"
                 _api.AutoFollow.IsAutoFollowing = false;
                 isMoving = false;
@@ -1067,14 +1160,17 @@ namespace BardSongHelper_WF
                 }
                 manualFollowTargetName = "";
                 manualFollowActive = false;
-                if (buttonToggleManualFollow.InvokeRequired) {
+                if (buttonToggleManualFollow.InvokeRequired)
+                {
                     buttonToggleManualFollow.Invoke(new MethodInvoker(delegate { buttonToggleManualFollow.Text = "Follow Current Target"; }));
-                } else {
+                }
+                else
+                {
                     buttonToggleManualFollow.Text = "Follow Current Target";
                 }
             }
         }
-        
+
         // StartBotFollow and StopBotFollow methods would be here if not deleted in this step.
 
         private void PauseTimersChecks_Tick(object sender, EventArgs e)
@@ -1173,62 +1269,66 @@ namespace BardSongHelper_WF
 
         private async Task ExecuteBardRotation(CancellationToken cancellationToken)
         {
-            // Helper function to send command and delay
-            async Task SendCommand(string command, CancellationToken ct, int delayMs = 1000) // Added CancellationToken
+            if (!IsPlayerInParty())
             {
-                if (ct.IsCancellationRequested) ct.ThrowIfCancellationRequested();
+                // Show a message to the user.
+                MetroMessageBox.Show(this, "Bard Rotation: You must be in a party with at least one other active member to start the rotation.", "Party Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // Throwing OperationCanceledException will be caught by the calling method's finally block
+                // to reset the toggle switch and rotation state.
+                throw new OperationCanceledException("Party required to start rotation.");
+            }
+
+            // Helper function to send command and delay
+            async Task SendCommand(string command, int delayMs = 1000)
+            {
+                if (cancellationToken.IsCancellationRequested) cancellationToken.ThrowIfCancellationRequested();
                 _api.ThirdParty.SendString(command);
-                await Task.Delay(delayMs, ct);
+                await Task.Delay(delayMs, cancellationToken);
             }
 
             // Helper function to play songs for a group
-            async Task PlaySongsForGroup(int groupNum, string followTargetName, List<SongData> songsToPlay, List<PartyRequirements> partyMembers, CancellationToken ct) // Added CancellationToken
+            async Task PlaySongsForGroup(int groupNum, string followTargetName, List<SongData> songsToPlay, List<PartyRequirements> partyMembers)
             {
-                if (ct.IsCancellationRequested) ct.ThrowIfCancellationRequested();
+                if (cancellationToken.IsCancellationRequested) cancellationToken.ThrowIfCancellationRequested();
 
                 if (!string.IsNullOrWhiteSpace(followTargetName) && followTargetName != "Follower target name." && followTargetName != "Follower target G2 name.")
                 {
-                    await SendCommand($"/follow \"{followTargetName}\"", ct, 1000); // Pass token
-                    await Task.Delay(3000, ct);
+                    await SendCommand($"/follow \"{followTargetName}\"");
+                    await Task.Delay(3000, cancellationToken);
                 }
 
-                // Simplified party check - ExecuteBardRotation should ensure we are in a party.
-                // Adding a small delay for safety for game state to update.
-                await Task.Delay(1000, ct);
-                var currentPartyInfo = _api.Party.GetPartyMembers();
-                if (currentPartyInfo == null || currentPartyInfo.Count <= 1)
+                if (!IsPlayerInParty())
                 {
-                    // Try one more time to join, in case invite came late or auto-join from timer didn't catch it.
-                    await SendCommand("/join", ct, 1500);
-                    await Task.Delay(2000, ct); // Wait for join to process
-                    currentPartyInfo = _api.Party.GetPartyMembers(); // Re-check
-                    if (currentPartyInfo == null || currentPartyInfo.Count <= 1)
-                    {
-                        MetroMessageBox.Show(this, $"Bard Rotation (Group {groupNum}): Not in a party when songs were expected to start. Aborting group.", "Party Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+                    MetroMessageBox.Show(this, $"Bard Rotation (Group {groupNum}): Not in a valid party with other active members. Aborting this group's songs.", "Party Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Abort songs for this group
                 }
-                
-                GrabParty(); 
+                // It's good practice to refresh party details if the check passes, 
+                // though IsPlayerInParty already fetches them. 
+                // If GrabParty() updates UI elements specifically needed before song casting, keep it.
+                // Otherwise, it might be redundant if IsPlayerInParty() is comprehensive enough.
+                // For now, let's assume GrabParty() is still useful here if the party check passes.
+                GrabParty();
 
                 foreach (var song in songsToPlay)
                 {
                     if (song == null) continue;
-                    if (ct.IsCancellationRequested) ct.ThrowIfCancellationRequested();
-                    
-                    await SendCommand($"/p Now playing: {song.SongName}!", ct, 1500); // Pass token
+                    if (cancellationToken.IsCancellationRequested) cancellationToken.ThrowIfCancellationRequested();
+
+                    // Announce song to party chat
+                    await SendCommand($"/p Now playing: {song.SongName}!", 1500);
                     _api.ThirdParty.SendString($"/ma \"{song.SongName}\" <me>");
-                    
+
+                    // THIS IS THE MODIFIED DELAY:
                     int songPlayDuration = GetSongDelaySeconds();
-                    await Task.Delay(songPlayDuration * 1000, ct); // Pass token
+                    await Task.Delay(songPlayDuration * 1000, cancellationToken);
                 }
 
-                await SendCommand($"/p Bard Rotation: Group {groupNum} songs complete. Leaving party.", ct, 1500); 
-                await SendCommand("/pcmd leave", ct, 2000); 
+                await SendCommand($"/p Bard Rotation: Group {groupNum} songs complete. Leaving party.", 1500); // Updated announcement
+                await SendCommand("/pcmd leave", 2000); // Changed command
             }
 
             // --- Rotation Start ---
-            MetroMessageBox.Show(this, "Bard Rotation Started. Ensure you are in a party or can accept invites for each group.", "Rotation Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MetroMessageBox.Show(this, "Bard Rotation Started. Ensure you are in a party or can accept invites for each group.", "Rotation Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             await Task.Delay(2000, cancellationToken);
 
             // GROUP 1
@@ -1236,56 +1336,12 @@ namespace BardSongHelper_WF
                 Songs.FirstOrDefault(s => s.Position == SongGroup1_Song1_ComboBox.SelectedIndex),
                 Songs.FirstOrDefault(s => s.Position == SongGroup1_Song2_ComboBox.SelectedIndex)
             };
-            await PlaySongsForGroup(1, FollowerTarget.Text, group1Songs, Member_List_Group1, cancellationToken); // Pass token
+            await PlaySongsForGroup(1, FollowerTarget.Text, group1Songs, Member_List_Group1);
             if (cancellationToken.IsCancellationRequested) cancellationToken.ThrowIfCancellationRequested();
 
-            // Add "Confirm Not in Party Loop"
-            MetroMessageBox.Show(this, "Bard Rotation: Group 1 songs complete, ensuring party is left...", "Rotation Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            bool leftPreviousParty = false;
-            for (int i = 0; i < 15; i++) // Max ~15 seconds wait
-            {
-                if (cancellationToken.IsCancellationRequested) cancellationToken.ThrowIfCancellationRequested();
-                var partyInfo = _api.Party.GetPartyMembers();
-                if (partyInfo == null || partyInfo.Count <= 1) // Should be solo
-                {
-                    leftPreviousParty = true;
-                    MetroMessageBox.Show(this, "Bard Rotation: Confirmed left previous party.", "Rotation Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    break;
-                }
-                await Task.Delay(1000, cancellationToken);
-            }
-
-            if (!leftPreviousParty)
-            {
-                //MetroMessageBox.Show(this, "Bard Rotation: Failed to confirm leaving previous party. Aborting rotation.", "Rotation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                cancellationToken.ThrowIfCancellationRequested(); 
-                return;
-            }
-            
-            // Replace fixed delay with "Wait for New Party (Group 2) Loop"
-            //MetroMessageBox.Show(this, "Bard Rotation: Waiting for new party invite for Group 2 (auto-join is active). Timeout in approx 90s.", "Rotation Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            bool joinedGroup2Party = false;
-            for (int i = 0; i < 60; i++) // Max 60 * 1.5s = 90 seconds wait
-            {
-                if (cancellationToken.IsCancellationRequested) cancellationToken.ThrowIfCancellationRequested();
-                var partyInfo = _api.Party.GetPartyMembers();
-                // Check if we are in a party with more than just ourselves
-                if (partyInfo != null && partyInfo.Count > 1) 
-                {
-                    joinedGroup2Party = true;
-                    //MetroMessageBox.Show(this, "Bard Rotation: Detected new party for Group 2.", "Rotation Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    await Task.Delay(1000, cancellationToken); 
-                    break;
-                }
-                await Task.Delay(1500, cancellationToken); 
-            }
-
-            if (!joinedGroup2Party)
-            {
-                //MetroMessageBox.Show(this, "Bard Rotation: Timed out waiting for Group 2 party invite. Ending rotation.", "Rotation Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cancellationToken.ThrowIfCancellationRequested(); 
-                return;
-            }
+            //MetroMessageBox.Show(this, "Bard Rotation: Group 1 complete. Waiting for new party invite for Group 2 (auto-join is active).", "Rotation Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            await Task.Delay(5000, cancellationToken); // Shortened wait
+            if (cancellationToken.IsCancellationRequested) cancellationToken.ThrowIfCancellationRequested();
 
             // GROUP 2
             if (!toggleGroup2Switch.Checked)
@@ -1298,7 +1354,7 @@ namespace BardSongHelper_WF
                     Songs.FirstOrDefault(s => s.Position == SongGroup2_Song1_ComboBox.SelectedIndex),
                     Songs.FirstOrDefault(s => s.Position == SongGroup2_Song2_ComboBox.SelectedIndex)
                 };
-                await PlaySongsForGroup(2, FollowerTargetGroup2.Text, group2Songs, Member_List_Group2, cancellationToken); // Pass token
+                await PlaySongsForGroup(2, FollowerTargetGroup2.Text, group2Songs, Member_List_Group2);
             }
 
             if (cancellationToken.IsCancellationRequested) cancellationToken.ThrowIfCancellationRequested();
@@ -1319,6 +1375,56 @@ namespace BardSongHelper_WF
             // {
             //     Console.WriteLine("Auto Join on Invite: Disabled by user.");
             // }
+        }
+
+        private void SongGroup1_Song1_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBoxSongDelay_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toggleSoulVoiceSwitch_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelSoulVoice_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBoxBardOptionsGroup2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void PauseOnZone_Switch_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBoxSongGroup2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBoxPartyGroup2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
