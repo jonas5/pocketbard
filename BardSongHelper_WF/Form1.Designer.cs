@@ -622,13 +622,26 @@ namespace BardSongHelper_WF
             this.buttonToggleManualFollow.UseSelectable = true;
             this.buttonToggleManualFollow.Click += new System.EventHandler(this.buttonToggleManualFollow_Click);
             // 
+            // InviteButton
+            // 
+            this.InviteButton = new MetroFramework.Controls.MetroButton();
+            this.InviteButton.BackColor = System.Drawing.Color.Red;
+            this.InviteButton.Location = new System.Drawing.Point(317, 540); // New Y position
+            this.InviteButton.Name = "InviteButton";
+            this.InviteButton.Size = new System.Drawing.Size(152, 37);
+            this.InviteButton.TabIndex = 15;
+            this.InviteButton.Text = "Not in Party";
+            this.InviteButton.UseSelectable = true;
+            this.InviteButton.Click += new System.EventHandler(this.InviteButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(480, 697);
+            this.ClientSize = new System.Drawing.Size(480, 751); // Increased height
             this.Controls.Add(this.ReloadParty);
             this.Controls.Add(this.buttonToggleManualFollow);
+            this.Controls.Add(this.InviteButton); // Added InviteButton to Controls
             this.Controls.Add(this.groupBoxPartyGroup2);
             this.Controls.Add(this.groupBoxSongGroup2);
             this.Controls.Add(this.groupBox8);
@@ -708,6 +721,7 @@ namespace BardSongHelper_WF
         private MetroFramework.Controls.MetroComboBox comboBoxRotationStartCall;
         private MetroFramework.Controls.MetroLabel metroLabel1;
         private MetroFramework.Controls.MetroLabel metroLabel2;
+        private MetroFramework.Controls.MetroButton InviteButton; // Added InviteButton declaration
         // NOTE: textBoxSongDelay field is INTENTIONALLY REMOVED from this list
     }
 }

@@ -1,4 +1,4 @@
-﻿using EliteMMO.API;
+﻿﻿using EliteMMO.API;
 using MetroFramework;
 using MetroFramework.Forms;
 using System;
@@ -421,7 +421,7 @@ namespace BardSongHelper_WF
 
                 // --- Auto-join logic ---
                 // Now governed by the toggleAutoJoinSwitch
-                if (toggleAutoJoinSwitch.Checked && _api != null && _api.Player.LoginStatus == (int)LoginStatus.LoggedIn)
+                if (_api != null && _api.Player.LoginStatus == (int)LoginStatus.LoggedIn)
                 {
                     EliteAPI.ChatEntry chatLine = _api.Chat.GetNextChatLine();
                     while (chatLine != null)
@@ -430,45 +430,48 @@ namespace BardSongHelper_WF
 
                         if (Regex.IsMatch(chatLine.Text, @"invites you to join", RegexOptions.IgnoreCase))
                         {
-
-                            //List<EliteAPI.PartyMember> PartyMembers = _api.Party.GetPartyMembers();
-                            var partyMembers = _api.Party.GetPartyMembers();
-
-
-                            int memberscount = 0; // Reset member count for each invite
-                            if (partyMembers.Count() > 1)
+                            // Update InviteButton UI
+                            if (InviteButton.InvokeRequired)
                             {
-
-                                foreach (EliteAPI.PartyMember PT_Data in partyMembers)
+                                InviteButton.Invoke(new MethodInvoker(delegate ()
                                 {
-
-
-
-                                    if (!string.IsNullOrWhiteSpace(PT_Data.Name)
-                                        && PT_Data.Name != _api.Player.Name
-                                        && PT_Data.Active >= 1
-                                        && !PartyMembersGroup1_ListBox.Items.Contains(PT_Data.Name)
-                                        && !PartyMembersGroup2_ListBox.Items.Contains(PT_Data.Name))
-                                    {
-                                        memberscount += 1; // Increment member count
-                                    }
-
-                                }
+                                    InviteButton.BackColor = System.Drawing.Color.Yellow;
+                                    InviteButton.Text = "Pending Invite";
+                                }));
                             }
-
-
-
-
-
-                            //  MessageBox.Show("partyMembers.Count: " + memberscount, "Party Members Count", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            if (partyMembers == null || memberscount <= 1)
+                            else
                             {
-                                //MessageBox.Show(this, "You have been invited to a party. Joining automatically.", "Party Invite", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                _api.ThirdParty.SendString("/join");
-                                await Task.Delay(2000); // Wait a moment for join to process
-                                GrabParty(); // Refresh party UI elements
+                                InviteButton.BackColor = System.Drawing.Color.Yellow;
+                                InviteButton.Text = "Pending Invite";
                             }
-                            break;
+                            if (toggleAutoJoinSwitch.Checked)
+                            {
+                                var partyMembers = _api.Party.GetPartyMembers();
+                                int memberscount = 0; // Reset member count for each invite
+                                if (partyMembers.Count() > 1)
+                                {
+                                    foreach (EliteAPI.PartyMember PT_Data in partyMembers)
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(PT_Data.Name)
+                                            && PT_Data.Name != _api.Player.Name
+                                            && PT_Data.Active >= 1
+                                            && !PartyMembersGroup1_ListBox.Items.Contains(PT_Data.Name)
+                                            && !PartyMembersGroup2_ListBox.Items.Contains(PT_Data.Name))
+                                        {
+                                            memberscount += 1; // Increment member count
+                                        }
+                                    }
+                                }
+                                //  MessageBox.Show("partyMembers.Count: " + memberscount, "Party Members Count", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                if (partyMembers == null || memberscount <= 1)
+                                {
+                                    //MessageBox.Show(this, "You have been invited to a party. Joining automatically.", "Party Invite", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    _api.ThirdParty.SendString("/join");
+                                    await Task.Delay(2000); // Wait a moment for join to process
+                                    GrabParty(); // Refresh party UI elements
+                                }
+                                break;
+                            }
                         }
                         chatLine = _api.Chat.GetNextChatLine();
                     }
@@ -1653,5 +1656,58 @@ namespace BardSongHelper_WF
         {
 
         }
+
+        private void InviteButton_Click(object sender, EventArgs e)
+        {
+            if (InviteButton != null && InviteButton.BackColor == System.Drawing.Color.Green)
+            {
+            // Pending invite: Accept it
+            if (_api != null && _api.Player.LoginStatus == (int)LoginStatus.LoggedIn)
+            {
+                _api.ThirdParty.SendString("/join");
+            }
+
+            // Set to yellow: accepted invite, now in party
+            if (InviteButton.InvokeRequired)
+            {
+                InviteButton.Invoke(new MethodInvoker(delegate ()
+                {
+                InviteButton.BackColor = System.Drawing.Color.Yellow;
+                InviteButton.Text = "In Party";
+                }));
+            }
+            else
+            {
+                InviteButton.BackColor = System.Drawing.Color.Yellow;
+                InviteButton.Text = "Leave Party";
+            }
+            }
+            else if (InviteButton != null && InviteButton.BackColor == System.Drawing.Color.Yellow)
+            {
+            // In party: Leave party
+            if (_api != null && _api.Player.LoginStatus == (int)LoginStatus.LoggedIn)
+            {
+                _api.ThirdParty.SendString("/pcmd leave");
+            }
+
+            // Set to red: not in a party
+            if (InviteButton.InvokeRequired)
+            {
+                InviteButton.Invoke(new MethodInvoker(delegate ()
+                {
+                InviteButton.UseCustomBackColor = true;
+                InviteButton.BackColor = System.Drawing.Color.Red;
+                InviteButton.Text = "Not in Party";
+                }));
+            }
+            else
+            {
+                InviteButton.UseCustomBackColor = true;
+                InviteButton.BackColor = System.Drawing.Color.Red;
+                InviteButton.Text = "Not in Party";
+            }
+            }
+        }
+
     }
 }
