@@ -75,6 +75,7 @@ namespace BardSongHelper_WF
             this.PartyMembersGroup2_ListBox = new System.Windows.Forms.ListBox();
             this.ReloadParty = new System.Windows.Forms.Button();
             this.buttonToggleManualFollow = new MetroFramework.Controls.MetroButton();
+            this.InviteButton = new MetroFramework.Controls.MetroButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -250,7 +251,7 @@ namespace BardSongHelper_WF
             // ActivityButton
             // 
             this.ActivityButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ActivityButton.Location = new System.Drawing.Point(317, 601);
+            this.ActivityButton.Location = new System.Drawing.Point(317, 602);
             this.ActivityButton.Name = "ActivityButton";
             this.ActivityButton.Size = new System.Drawing.Size(152, 40);
             this.ActivityButton.TabIndex = 6;
@@ -624,13 +625,12 @@ namespace BardSongHelper_WF
             // 
             // InviteButton
             // 
-            this.InviteButton = new MetroFramework.Controls.MetroButton();
             this.InviteButton.BackColor = System.Drawing.Color.Red;
-            this.InviteButton.Location = new System.Drawing.Point(317, 540); // New Y position
+            this.InviteButton.Location = new System.Drawing.Point(317, 540);
             this.InviteButton.Name = "InviteButton";
             this.InviteButton.Size = new System.Drawing.Size(152, 37);
             this.InviteButton.TabIndex = 15;
-            this.InviteButton.Text = "Not in Party";
+            this.InviteButton.Text = "Unemployed";
             this.InviteButton.UseSelectable = true;
             this.InviteButton.Click += new System.EventHandler(this.InviteButton_Click);
             // 
@@ -638,10 +638,10 @@ namespace BardSongHelper_WF
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(480, 751); // Increased height
+            this.ClientSize = new System.Drawing.Size(480, 694);
             this.Controls.Add(this.ReloadParty);
             this.Controls.Add(this.buttonToggleManualFollow);
-            this.Controls.Add(this.InviteButton); // Added InviteButton to Controls
+            this.Controls.Add(this.InviteButton);
             this.Controls.Add(this.groupBoxPartyGroup2);
             this.Controls.Add(this.groupBoxSongGroup2);
             this.Controls.Add(this.groupBox8);

@@ -351,6 +351,7 @@ namespace BardSongHelper_WF
                     }
                 }
                 UpdatePolidButtonText(); // Update button based on new scan
+                //----
                 return;
             }
 
@@ -375,6 +376,24 @@ namespace BardSongHelper_WF
                     {
                         cl = _api.Chat.GetNextChatLine();
                     }
+
+                    int memberCount = GetActivePartyMemberCount();
+
+                    if (memberCount > 0)
+                    {
+                        InviteButton.UseCustomBackColor = true;
+                        InviteButton.BackColor = Color.Red;
+                        InviteButton.Text = "In Business";
+                    }
+
+                    else
+                    {
+                        InviteButton.UseCustomBackColor = true;
+                        InviteButton.BackColor = Color.Green;
+                        InviteButton.Text = "Unemployed";
+                        //MessageBox.Show(this, "You are not in a party. Please invite some friends to use this bot effectively.", "No Party", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
                     GrabParty();
                     firstSelect = true;
                 }
@@ -430,43 +449,27 @@ namespace BardSongHelper_WF
 
                         if (Regex.IsMatch(chatLine.Text, @"invites you to join", RegexOptions.IgnoreCase))
                         {
-                            // Update InviteButton UI
-                            if (InviteButton.InvokeRequired)
-                            {
-                                InviteButton.Invoke(new MethodInvoker(delegate ()
-                                {
-                                    InviteButton.BackColor = System.Drawing.Color.Yellow;
-                                    InviteButton.Text = "Pending Invite";
-                                }));
-                            }
-                            else
-                            {
-                                InviteButton.BackColor = System.Drawing.Color.Yellow;
-                                InviteButton.Text = "Pending Invite";
-                            }
+                            // Only update InviteButton UI if this was triggered by the InviteButton being pushed (not auto-join)
+
+
+                            InviteButton.BackColor = Color.Yellow;
+                            InviteButton.Text = "Pending Invite";
+
+
                             if (toggleAutoJoinSwitch.Checked)
                             {
-                                var partyMembers = _api.Party.GetPartyMembers();
-                                int memberscount = 0; // Reset member count for each invite
-                                if (partyMembers.Count() > 1)
-                                {
-                                    foreach (EliteAPI.PartyMember PT_Data in partyMembers)
-                                    {
-                                        if (!string.IsNullOrWhiteSpace(PT_Data.Name)
-                                            && PT_Data.Name != _api.Player.Name
-                                            && PT_Data.Active >= 1
-                                            && !PartyMembersGroup1_ListBox.Items.Contains(PT_Data.Name)
-                                            && !PartyMembersGroup2_ListBox.Items.Contains(PT_Data.Name))
-                                        {
-                                            memberscount += 1; // Increment member count
-                                        }
-                                    }
-                                }
+
+                                int memberscount = GetActivePartyMemberCount();
                                 //  MessageBox.Show("partyMembers.Count: " + memberscount, "Party Members Count", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                if (partyMembers == null || memberscount <= 1)
+                                if (memberscount < 1)
                                 {
                                     //MessageBox.Show(this, "You have been invited to a party. Joining automatically.", "Party Invite", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     _api.ThirdParty.SendString("/join");
+                                    // Update InviteButton to indicate successful join
+                                    InviteButton.UseCustomBackColor = true;
+                                    InviteButton.BackColor = Color.Red;
+                                    InviteButton.Text = "In Business";
+
                                     await Task.Delay(2000); // Wait a moment for join to process
                                     GrabParty(); // Refresh party UI elements
                                 }
@@ -1354,13 +1357,13 @@ namespace BardSongHelper_WF
 
                     if (IsPlayerInParty())
                     {
-                        Console.WriteLine($"Party check successful on attempt {i} for Group {groupNum}.");
+                        Console.WriteLine($"Party check successful on attempt {i} for Group {groupNum}. - Form1.cs:1360");
                         partyCheckSuccessful = true;
                         break;
                     }
                     else
                     {
-                        Console.WriteLine($"Party check failed on attempt {i} for Group {groupNum}. Retrying in {GetSongDelaySeconds()} seconds...");
+                        Console.WriteLine($"Party check failed on attempt {i} for Group {groupNum}. Retrying in {GetSongDelaySeconds()} seconds... - Form1.cs:1366");
                         if (i < 3) // Don't wait after the last attempt
                         {
                             await Task.Delay(GetSongDelaySeconds() * 1000, cancellationToken);
@@ -1387,7 +1390,7 @@ namespace BardSongHelper_WF
                     if (cancellationToken.IsCancellationRequested) cancellationToken.ThrowIfCancellationRequested();
 
                     // Announce song to party chat
-                    await SendCommand($"/p Now playing: {song.SongName}!", 1500);
+                    await SendCommand($"/p Now playing: {song.SongName}!", 500);
                     _api.ThirdParty.SendString($"/ma \"{song.SongName}\" <me>");
 
                     if (groupNum == 1)
@@ -1533,8 +1536,14 @@ namespace BardSongHelper_WF
                 {
                     leaveMessage += " " + comboBoxLeavePartyCall.SelectedItem.ToString();
                 }
-                await SendCommand(leaveMessage, 1500);
-                await SendCommand("/pcmd leave", 2000); // Changed command
+                await SendCommand(leaveMessage, 500);
+
+                // Update the InviteButton state
+                InviteButton.UseCustomBackColor = true;
+                InviteButton.BackColor = Color.Green;
+                InviteButton.Text = "Unemployed";
+
+                await SendCommand("/pcmd leave", 500); // Changed command
             }
 
             // --- Rotation Start ---
@@ -1657,57 +1666,106 @@ namespace BardSongHelper_WF
 
         }
 
-        private void InviteButton_Click(object sender, EventArgs e)
+        private int GetActivePartyMemberCount()
         {
-            if (InviteButton != null && InviteButton.BackColor == System.Drawing.Color.Green)
-            {
-            // Pending invite: Accept it
-            if (_api != null && _api.Player.LoginStatus == (int)LoginStatus.LoggedIn)
-            {
-                _api.ThirdParty.SendString("/join");
-            }
+            var partyMembers = _api.Party.GetPartyMembers();
+            if (partyMembers == null) return 0;
 
-            // Set to yellow: accepted invite, now in party
-            if (InviteButton.InvokeRequired)
-            {
-                InviteButton.Invoke(new MethodInvoker(delegate ()
-                {
-                InviteButton.BackColor = System.Drawing.Color.Yellow;
-                InviteButton.Text = "In Party";
-                }));
-            }
-            else
-            {
-                InviteButton.BackColor = System.Drawing.Color.Yellow;
-                InviteButton.Text = "Leave Party";
-            }
-            }
-            else if (InviteButton != null && InviteButton.BackColor == System.Drawing.Color.Yellow)
-            {
-            // In party: Leave party
-            if (_api != null && _api.Player.LoginStatus == (int)LoginStatus.LoggedIn)
-            {
-                _api.ThirdParty.SendString("/pcmd leave");
-            }
 
-            // Set to red: not in a party
-            if (InviteButton.InvokeRequired)
+            int memberscount = 0;
+            if (partyMembers.Count() > 1)
             {
-                InviteButton.Invoke(new MethodInvoker(delegate ()
+                foreach (EliteAPI.PartyMember PT_Data in partyMembers)
                 {
-                InviteButton.UseCustomBackColor = true;
-                InviteButton.BackColor = System.Drawing.Color.Red;
-                InviteButton.Text = "Not in Party";
-                }));
+                    if (!string.IsNullOrWhiteSpace(PT_Data.Name)
+                        && PT_Data.Name != _api.Player.Name
+                        && PT_Data.Active >= 1
+                        && !PartyMembersGroup1_ListBox.Items.Contains(PT_Data.Name)
+                        && !PartyMembersGroup2_ListBox.Items.Contains(PT_Data.Name))
+                    {
+                        memberscount += 1;
+                    }
+                }
             }
-            else
-            {
-                InviteButton.UseCustomBackColor = true;
-                InviteButton.BackColor = System.Drawing.Color.Red;
-                InviteButton.Text = "Not in Party";
-            }
-            }
+            return memberscount;
         }
 
+        private void InviteButton_Click(object sender, EventArgs e)
+        {
+            if (POLID.SelectedItem != null && firstSelect == true) // Check if an item is selected in the POLID ComboBox
+
+            {
+
+                // Green = No Invite (do nothing)
+                if (InviteButton != null && InviteButton.BackColor == System.Drawing.Color.Green)
+                {
+                    // reject invite if no invitation is being sent.
+                    if (_api != null && _api.Player.LoginStatus == (int)LoginStatus.LoggedIn)
+                    {
+                        //MessageBox.Show("Decline current open invitations", "Decline", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        _api.ThirdParty.SendString("/decline");
+                    }
+
+                    // No invite to accept, do nothing
+                    return;
+                }
+                // Yellow = Pending Invite (click to accept)
+                else if (InviteButton != null && InviteButton.BackColor == System.Drawing.Color.Yellow)
+                {
+                    if (_api != null && _api.Player.LoginStatus == (int)LoginStatus.LoggedIn)
+                    {
+                        _api.ThirdParty.SendString("/join");
+                    }
+
+                    // Set to Red: now in party
+                    if (InviteButton.InvokeRequired)
+                    {
+                        InviteButton.Invoke(new MethodInvoker(delegate ()
+                        {
+                            InviteButton.UseCustomBackColor = true;
+                            InviteButton.BackColor = Color.Red;
+                            InviteButton.Text = "In Business";
+                        }));
+                    }
+                    else
+                    {
+                        InviteButton.UseCustomBackColor = true;
+                        InviteButton.BackColor = Color.Red;
+                        InviteButton.Text = "In Business";
+                    }
+                }
+                // Red = In Party (click to leave)
+                else if (InviteButton != null && InviteButton.BackColor == System.Drawing.Color.Red)
+                {
+                    if (_api != null && _api.Player.LoginStatus == (int)LoginStatus.LoggedIn)
+                    {
+                        _api.ThirdParty.SendString("/pcmd leave");
+                    }
+
+                    // Set to Green: not in party
+                    if (InviteButton.InvokeRequired)
+                    {
+                        InviteButton.Invoke(new MethodInvoker(delegate ()
+                        {
+                            InviteButton.UseCustomBackColor = true;
+                            InviteButton.BackColor = Color.Green;
+                            InviteButton.Text = "Unemployed";
+                        }));
+                    }
+                    else
+                    {
+                        InviteButton.UseCustomBackColor = true;
+                        InviteButton.BackColor = Color.Green;
+                        InviteButton.Text = "Unemployed";
+                    }
+                }
+            }
+            else
+            {
+                // If no item is selected, show a message box to the user
+                MetroMessageBox.Show(this, "Please select a POL ID from the dropdown before clicking the invite button.", "No POL ID Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
     }
 }
